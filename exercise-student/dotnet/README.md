@@ -1,118 +1,72 @@
-# Polymorphism
+# Unit Testing
 
-The purpose of this exercise is to practice writing code that uses the Object-Oriented Programming principle of polymorphism.
+The purpose of this exercise is to provide you with opportunity to practice [unit testing][what-is-unit-testing] a codebase that doesn't include any automated tests.
 
 ## Learning objectives
 
-After completing this exercise, students will be able to:
+After completing this exercise, students will understand:
 
-- Explain the concept of polymorphism and how it's useful
-- Understand where inheritance can assist in writing polymorphic code
-- State the purpose of interfaces and how they're used
-- Use polymorphism through inheritance using IS-A relationships
-- Use polymorphism through interfaces using CAN-DO relationships
-- Give examples of interfaces from the C# standard library (Collections)
-
-## Getting started
-
-- Open the `BankTellerExercise.sln` solution in Visual Studio.
-- Complete the appropriate classes to satisfy the requirements.
+* How to write unit tests in a "legacy" codebase.
+* How unit testing can be used to show the code is functioning correctly.
+* How to structure unit tests in an organized, readable format.
+* Why unit tests are important.
+* How to write readable unit tests.
 
 ## Evaluation criteria and functional requirements
 
-- The project must not have any build errors.
-- Code is presented in a clean, organized format.
-- Code is appropriately encapsulated.
-- Polymorphism is used appropriately to avoid code duplication.
-- The code meets the specifications defined below.
+> Code without tests is **bad code**. It doesn't matter how well written it is; it doesn't matter how pretty or object-oriented or well-encapsulated it is. With tests, we can change the behavior of our code quickly and verifiably. Without them, we really don't know if our code is getting better or worse.”
+~ Michael Feathers, _Working Effectively with Legacy Code_
 
-### Bank customer application
+You've been hired as a new developer at Acme Inc. As such, you have inherited some [legacy code][what-is-legacy-code] that doesn't have any unit tests. Your job is to create unit tests for all classes to ensure that the code is tested.
 
-**Notes for all Classes and interfaces**
-- X in the set column indicates it **should have a setter**.
-- Nothing in the set column indicates the attribute is derived.
-- Readonly attributes don't require a setter. They're set from the class's constructor.
+Your code will be evaluated based on the following criteria:
 
-### Instructions
+* The project must not have any build errors.
+* Unit tests pass as expected.
+* There is appropriate code coverage to verify that the application code functions as expected.
+* Good test method names are provided that clearly state what is being tested.
 
-This code extends from the previous day's exercise. The bank account classes work well, but now the bank needs to calculate a customer's total assets to assign them VIP status if they have over $25,000 in assets at the bank.
+## Getting started
 
-The bank is also introducing credit cards. Since credit cards aren't strictly bank accounts where money is stored, they don't inherit from the `BankAccount` class. However, they must still be accounted for in the VIP calculation.
+1. Open the `UnitTestingExercise.sln` solution in Visual Studio.
+2. Create a test class for the class you'll test. For instance, if you're testing the `WordCount` class, create a class in the `Exercises.Tests` project called `WordCountTests`.
+3. Write test methods in the test class to verify the class under test works as expected.
 
-For this exercise, you'll add new features to the code to create a `Customer` class that has multiple accounts. You'll also create a new type of account: a credit card account. A credit card account isn't a `BankAccount`, but it needs to be stored with the customer as one of their accounts. To do this, you need to create a new interface that specifies that an object is "accountable" and has a `Balance` property.
 
-![Account Class Diagram](./account-class-diagram.png)
+## Tips and tricks
 
-For this exercise, you will:
+### Unit testing reduces regressions
 
-1. Add a new method to allow customers to transfer money between `BankAccount`s.
-2. Create a new interface called `IAccountable` and make `BankAccount` implement `IAccountable`.
-3. Create a new class called `CreditCardAccount` that's also `IAccountable`.
-4. Create a `Customer` class that has many `IAccountable` objects and a calculated property, `IsVip`.
+Real applications grow over time, and it can be difficult, if not impossible, to foresee all the consequences of changing code. New features may make assumptions regarding the behavior of existing components which inadvertently alters the application's behavior. Bug fixes can fix one thing, but break something else. Unit tests can help detect these **regressions**.
 
-#### Step One: Add a new `TransferTo()` method to transfer money between `BankAccount`s
+>Note: Regression has several meanings in software engineering, but in general, it means what the word implies: the *opposite of progress*. Whatever change occurred, it made things worse.
 
-Add the following method to allow `BankAccount`s to transfer money to another `BankAccount`. Where would you add this method to make sure it works for all `BankAccount`s, including `SavingsAccount` and `CheckingAccount`?
+Ideally, as you build your application, you are scaffolding it with unit tests. For every new block of code you write, or change you make, you should be writing and running unit tests. Provided you run all the tests, both new and old, together, any changes you made that inadvertently broke something should be revealed. *Unit testing can't prevent regressions, but it can alert you to them.*
 
-| Method Name                                                      | Return Type | Description                                                                             |
-| ---------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
-| `TransferTo(BankAccount destinationAccount, int transferAmount)` | `int`       | Withdraws `transferAmount` from this account and deposits it into `destinationAccount`. |
+### Unit testing can make you a faster developer
 
-New unit tests have been added for this section. This section is complete when the `CheckingAccountTest`, `SavingsAccountTest`, and `BankAccountTest` unit tests pass.
+Consider the command line applications you worked on over the past few exercises. Although you can test these applications manually, you'd have to do several things:
 
-#### Step Two: Create the `IAccountable` interface and make `BankAccount` implement it
+1. Make a code change
+2. Start the application
+3. Click through the menus
+4. Manually review results
+5. Verify that code works as expected
 
-The `IAccountable` interface means that an object can be used in the accounting process for the customer.
+A unit test automates this effort, is repeatable, quicker, and is therefore more reliable.
 
-| Attribute Name | Return Type | Description                                          |
-| -------------- | ----------- | ---------------------------------------------------- |
-| `Balance`      | `int`       | Returns the balance value of the account in dollars. |
+Writing good unit tests helps you ship code faster and more reliably than developers who don't.
 
-Add the `IAccountable` interface to `BankAccount`. This makes `BankAccount`, and all the classes that inherit from `BankAccount`, "accountable" classes.
+### Naming matters
 
-Once the `IAccountableTests` unit tests pass, this section is complete.
+Test methods must clearly state what's being tested in the method name.
 
-#### Step Three: Implement a new `CreditCardAccount` class
+For instance, if you want to verify that an Add method returns 4 when it's passed 2 and 2, then the name of the test method should be something like `Add_should_return_4_when_2_and_2_are_passed`. This is verbose, but verbose methods are preferred in unit tests, as they clearly articulate what's being tested.
 
-A `CreditCardAccount` isn't a `BankAccount` but "can-do" `Accountable`.
+There are some other [best practices you should follow when writing unit tests][unit-testing-best-practices], too.
 
-| Constructor                                                         | Description                                                                                                            |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `CreditCardAccount(string accountHolderName, string accountNumber)` | A new credit card account requires an account holder name and account number. The debt defaults to a 0 dollar balance. |
+---
 
-| Attribute Name      | Data Type | Get | Set | Description                                                  |
-| ------------------- | --------- | --- | --- | ------------------------------------------------------------ |
-| `AccountHolderName` | `string`  | X   |     | Returns the account holder name that the account belongs to. |
-| `AccountNumber`     | `string`  | X   |     | Returns the account number that the account belongs to.      |
-| `Debt`              | `int`     | X   |     | Returns the amount the customer owes.                        |
-
-| Method Name                  | Return Type | Description                                                                       |
-| ---------------------------- | ----------- | --------------------------------------------------------------------------------- |
-| `Pay(int amountToPay)`       | `int`       | Removes `amountToPay` from the amount owed and returns the new total amount owed. |
-| `Charge(int amountToCharge)` | `int`       | Adds `amountToCharge` to the amount owed and returns the new total amount owed.   |
-
-Note: Be sure to implement the interface. The balance for the accounting must be the debt as a negative number.
-
-Once the `CreditCardAccountTests` unit tests pass, this section is complete.
-
-#### Step Four: Implement a `BankCustomer`
-
-Implement the `BankCustomer` class. A bank customer "has-a" list of `Accountable`s.
-
-| Attribute Name | Data Type | Get | Set | Private | Description                                                                                     |
-| -------------- | --------- | --- | --- | ------- | ----------------------------------------------------------------------------------------------- |
-| `Name`         | `string`  | X   | X   |         | Returns the name of the bank customer.                                                          |
-| `Address`      | `string`  | X   | X   |         | Returns the address of the bank customer.                                                       |
-| `PhoneNumber`  | `string`  | X   | X   |         | Returns the phone number of the bank customer.                                                  |
-| `IsVip`        | `bool`    | X   |     |         | Calculates the balance of all accounts, returns `true` if at least $25,000; otherwise is false. |
-
-Note that you will likely want to have a private variable or field to store the accounts inside of the class, but the name and data type for this is up to you to decide.
-
-| Method Name                           | Return Type      | Description                                              |
-| ------------------------------------- | ---------------- | -------------------------------------------------------- |
-| `AddAccount(IAccountable newAccount)` | `void`           | Adds `newAccount` to the customer's list of accounts.    |
-| `GetAccounts()`                       | `IAccountable[]` | Returns array of the accounts belonging to the customer. |
-
-Note: Even though `GetAccounts()` returns an array, you don't have to store the accounts in the `BankCustomer` as an array. In fact, since you need to add accounts whenever the `AddAccount()` method is called, you'll need to use a different data structure in the class to store the accounts that's like an array, but can be added to at any time.
-
-Once the `BankCustomerTests` unit test passes, this section is complete.
+[unit-testing-best-practices]: https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+[what-is-unit-testing]: https://searchsoftwarequality.techtarget.com/definition/unit-testing
+[what-is-legacy-code]: http://wiki.c2.com/?LegacyCode
