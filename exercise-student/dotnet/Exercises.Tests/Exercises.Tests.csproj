@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Classes\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Exercises\Exercises.csproj" />
   </ItemGroup>
 
