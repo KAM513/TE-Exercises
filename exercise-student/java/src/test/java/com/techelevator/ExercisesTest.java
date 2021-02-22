@@ -1,608 +1,452 @@
 package com.techelevator;
 
-import org.junit.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ExercisesTest {
 
-	private final Exercises exercises = new Exercises();
+	final double DOUBLE_FUDGE_FACTOR = 0.001d;
+
+	Exercises exercises = new Exercises();
 
 	/*
-	 sleepIn(false, false) → true
-	 sleepIn(true, false) → false
-	 sleepIn(false, true) → true
+	 * Given the name of an animal, return the name of a group of that animal
+	 * (e.g. "Elephant" -> "Herd", "Rhino" - "Crash").
+	 *
+	 * The animal name should be case insensitive so "elephant", "Elephant", and
+	 * "ELEPHANT" should all return "herd".
+	 *
+	 * If the name of the animal is not found, null, or empty, return "unknown".
+	 *
+	 * Rhino -> Crash
+	 * Giraffe -> Tower
+	 * Elephant -> Herd
+	 * Lion -> Pride
+	 * Crow -> Murder
+	 * Pigeon -> Kit
+	 * Flamingo -> Pat
+	 * Deer -> Herd
+	 * Dog -> Pack
+	 * Crocodile -> Float
+	 *
+	 * animalGroupName("giraffe") → "Tower"
+	 * animalGroupName("") -> "unknown"
+	 * animalGroupName("walrus") -> "unknown"
+	 *
 	 */
 	@Test
-	public void sleepIn() {
-		assertEquals("sleepIn(false, false)", true, exercises.sleepIn(false, false));
-		assertEquals("sleepIn(true, false)", false, exercises.sleepIn(true, false));
-		assertEquals("sleepIn(false, true)", true, exercises.sleepIn(false, true));
-		assertEquals("sleepIn(true, true)", true, exercises.sleepIn(true, true));
+	public void exercise01_animalGroupName() {
+		assertEquals("Input: animalGroupName(\"giraffe\")", "Tower", exercises.animalGroupName("giraffe"));
+		assertEquals("Input: animalGroupName(\"GiRaFfE\")", "Tower", exercises.animalGroupName("GiRaFfE"));
+		assertEquals("Input: animalGroupName(\"\")", "unknown", exercises.animalGroupName(""));
+		assertEquals("Input: animalGroupName(\"Crow\")", "Murder", exercises.animalGroupName("Crow"));
+		assertEquals("Input: animalGroupName(\"walrus\")", "unknown", exercises.animalGroupName("walrus"));
+		assertEquals("Input: animalGroupName(null)", "unknown", exercises.animalGroupName(null));
 	}
 
 	/*
-	 monkeyTrouble(true, true) → true
-	 monkeyTrouble(false, false) → true
-	 monkeyTrouble(true, false) → false
+	 * Given an String item number (a.k.a. SKU), return the discount percentage if the item is on sale.
+	 * If the item is not on sale, return 0.00.
+	 *
+	 * If the item number is empty or null, return 0.00.
+	 *
+	 * "KITCHEN4001" -> 0.20
+	 * "GARAGE1070" -> 0.15
+	 * "LIVINGROOM"	-> 0.10
+	 * "KITCHEN6073" -> 0.40
+	 * "BEDROOM3434" -> 0.60
+	 * "BATH0073" -> 0.15
+	 *
+	 * The item number should be case insensitive so "kitchen4001", "Kitchen4001", and "KITCHEN4001"
+	 * should all return 0.20.
+	 *
+	 * isItOnSale("kitchen4001") → 0.20
+	 * isItOnSale("") → 0.00
+	 * isItOnSale("GARAGE1070") → 0.15
+	 * isItOnSale("dungeon9999") → 0.00
+	 *
 	 */
 	@Test
-	public void monkeyTrouble() {
-		assertEquals("Input: monkeyTrouble(true, true)", true, exercises.monkeyTrouble(true, true));
-		assertEquals("Input: monkeyTrouble(false, false)", true, exercises.monkeyTrouble(false, false));
-		assertEquals("Input: monkeyTrouble(true, false)", false, exercises.monkeyTrouble(true, false));
-		assertEquals("Input: monkeyTrouble(false, true)", false, exercises.monkeyTrouble(false, true));
+	public void exercise02_isItOnSale() {
+		assertEquals("Input: isItOnSale({\"kitchen4001\")", 0.20, exercises.isItOnSale("kitchen4001"),
+				DOUBLE_FUDGE_FACTOR);
+		assertEquals("Input: isItOnSale({\"\")", 0.00, exercises.isItOnSale(""), DOUBLE_FUDGE_FACTOR);
+		assertEquals("Input: isItOnSale({\"BEDROOM3434\")", 0.60, exercises.isItOnSale("BEDROOM3434"),
+				DOUBLE_FUDGE_FACTOR);
+		assertEquals("Input: isItOnSale({\"dungeon9999\")", 0.00, exercises.isItOnSale("dungeon9999"),
+				DOUBLE_FUDGE_FACTOR);
+		assertEquals("Input: isItOnSale(null)", 0.00, exercises.isItOnSale(null), DOUBLE_FUDGE_FACTOR);
 	}
 
 	/*
-	 sumDouble(1, 2) → 3
-	 sumDouble(3, 2) → 5
-	 sumDouble(2, 2) → 8
+	 * Modify and return the given map as follows: if "Peter" has more than 0 money, transfer half of it to "Paul",
+	 * but only if Paul has less than $10s.
+	 *
+	 * Note, monetary amounts are specified in cents: penny=1, nickel=5, ... $1=100, ... $10=1000, ...
+	 *
+	 * robPeterToPayPaul({"Peter": 2000, "Paul": 99}) → {"Peter": 1000, "Paul": 1099}
+	 * robPeterToPayPaul({"Peter": 2000, "Paul": 30000}) → {"Peter": 2000, "Paul": 30000}
+	 *
 	 */
 	@Test
-	public void sumDouble() {
-		assertEquals("Input: sumDouble(1, 2)", 3, exercises.sumDouble(1, 2));
-		assertEquals("Input: sumDouble(3, 2)", 5, exercises.sumDouble(3, 2));
-		assertEquals("Input: sumDouble(2, 2)", 8, exercises.sumDouble(2, 2));
-		assertEquals("Input: sumDouble(2, 2)", -1, exercises.sumDouble(-1, 0));
-		assertEquals("Input: sumDouble(2, 2)", 12, exercises.sumDouble(3, 3));
-		assertEquals("Input: sumDouble(2, 2)", 0, exercises.sumDouble(0, 0));
-		assertEquals("Input: sumDouble(2, 2)", 1, exercises.sumDouble(0, 1));
-		assertEquals("Input: sumDouble(2, 2)", 7, exercises.sumDouble(3, 4));
+	public void exercise03_robPeterToPayPaul() {
+		Map<String, Integer> output = exercises.robPeterToPayPaul(peterPaulInput(2000, 99));
+		assertThat("robPeterToPayPaul({\"Peter\": 2000, \"Paul\": 99})", output, hasEntry("Peter", 1000));
+		assertThat("robPeterToPayPaul({\"Peter\": 2000, \"Paul\": 99})", output, hasEntry("Paul", 1099));
+
+		output = exercises.robPeterToPayPaul(peterPaulInput(2000, 30000));
+		assertThat("robPeterToPayPaul({\"Peter\": 2000, \"Paul\": 30000})", output, hasEntry("Peter", 2000));
+		assertThat("robPeterToPayPaul({\"Peter\": 2000, \"Paul\": 30000})", output, hasEntry("Paul", 30000));
+
+		output = exercises.robPeterToPayPaul(peterPaulInput(0, 5000));
+		assertThat("robPeterToPayPaul({\"Peter\": 0, \"Paul\": 5000})", output, hasEntry("Peter", 0));
+		assertThat("robPeterToPayPaul({\"Peter\": 0, \"Paul\": 5000})", output, hasEntry("Paul", 5000));
+
+		output = exercises.robPeterToPayPaul(peterPaulInput(1, 5000));
+		assertThat("robPeterToPayPaul({\"Peter\": 1, \"Paul\": 5000})", output, hasEntry("Peter", 1));
+		assertThat("robPeterToPayPaul({\"Peter\": 1, \"Paul\": 5000})", output, hasEntry("Paul", 5000));
+
+		output = exercises.robPeterToPayPaul(peterPaulInput(2345, 500));
+		assertThat("robPeterToPayPaul({\"Peter\": 2345, \"Paul\": 500})", output, hasEntry("Peter", 1173));
+		assertThat("robPeterToPayPaul({\"Peter\": 2345, \"Paul\": 500})", output, hasEntry("Paul", 1672));
+
+		output = exercises.robPeterToPayPaul(peterPaulInput(5000, 1000));
+		assertThat("robPeterToPayPaul({\"Peter\": 5000, \"Paul\": 1000})", output, hasEntry("Peter", 5000));
+		assertThat("robPeterToPayPaul({\"Peter\": 5000, \"Paul\": 1000})", output, hasEntry("Paul", 1000));
+
+		output = exercises.robPeterToPayPaul(peterPaulInput(5000, 999));
+		assertThat("robPeterToPayPaul({\"Peter\": 5000, \"Paul\": 999})", output, hasEntry("Peter", 2500));
+		assertThat("robPeterToPayPaul({\"Peter\": 5000, \"Paul\": 999})", output, hasEntry("Paul", 3499));
+	}
+
+	private Map<String, Integer> peterPaulInput(int peterMoney, int paulMoney) {
+		HashMap<String, Integer> input = new HashMap<>();
+		input.put("Peter", peterMoney);
+		input.put("Paul", paulMoney);
+		return input;
 	}
 
 	/*
-	 diff21(19) → 2
-	 diff21(10) → 11
-	 diff21(21) → 0
-	 diff21(22) → 2
-	 diff21(-10) → 31
+	 * Modify and return the given map as follows: if "Peter" has $50 or more, AND "Paul" has $100 or more,
+	 * then create a new "PeterPaulPartnership" worth a combined contribution of a quarter of each partner's
+	 * current worth.
+	 *
+	 * peterPaulPartnership({"Peter": 50000, "Paul": 100000}) → {"Peter": 37500, "Paul": 750000, "PeterPaulPartnership": 63500}
+	 * peterPaulPartnership({"Peter": 3333, "Paul": 1234567890}) → {"Peter": 3333, "Paul": 1234567890}
+	 *
 	 */
 	@Test
-	public void diff21() {
-		assertEquals("Input: diff21(19)", 2, exercises.diff21(19));
-		assertEquals("Input: diff21(10)", 11, exercises.diff21(10));
-		assertEquals("Input: diff21(21)", 0, exercises.diff21(21));
-		assertEquals("Input: diff21(22)", 2, exercises.diff21(22));
-		assertEquals("Input: diff21(25)", 8, exercises.diff21(25));
-		assertEquals("Input: diff21(30)", 18, exercises.diff21(30));
-		assertEquals("Input: diff21(0)", 21, exercises.diff21(0));
-		assertEquals("Input: diff21(1)", 20, exercises.diff21(1));
-		assertEquals("Input: diff21(2)", 19, exercises.diff21(2));
-		assertEquals("Input: diff21(-1)", 22, exercises.diff21(-1));
-		assertEquals("Input: diff21(-2)", 23, exercises.diff21(-2));
-		assertEquals("Input: diff21(50)", 58, exercises.diff21(50));
+	public void exercise04_peterPaulPartnership() {
+		Map<String, Integer> output = exercises.peterPaulPartnership(peterPaulInput(5000, 10000));
+		assertThat("peterPaulPartnership({\"Peter\": 5000, \"Paul\": 10000})", output, hasEntry("Peter", 3750));
+		assertThat("peterPaulPartnership({\"Peter\": 5000, \"Paul\": 10000})", output, hasEntry("Paul", 7500));
+		assertThat("peterPaulPartnership({\"Peter\": 5000, \"Paul\": 10000})", output,
+				hasEntry("PeterPaulPartnership", 3750));
+
+		output = exercises.peterPaulPartnership(peterPaulInput(3333, 1234567890));
+		assertThat("peterPaulPartnership({\"Peter\": 3333, \"Paul\": 1234567890})", output, hasEntry("Peter", 3333));
+		assertThat("peterPaulPartnership({\"Peter\": 3333, \"Paul\": 1234567890})", output,
+				hasEntry("Paul", 1234567890));
+
+		output = exercises.peterPaulPartnership(peterPaulInput(4999, 1234567890));
+		assertThat("peterPaulPartnership({\"Peter\": 4999, \"Paul\": 1234567890})", output, hasEntry("Peter", 4999));
+		assertThat("peterPaulPartnership({\"Peter\": 4999, \"Paul\": 1234567890})", output,
+				hasEntry("Paul", 1234567890));
+
+		output = exercises.peterPaulPartnership(peterPaulInput(5000, 9999));
+		assertThat("peterPaulPartnership({\"Peter\": 5000, \"Paul\": 9999})", output, hasEntry("Peter", 5000));
+		assertThat("peterPaulPartnership({\"Peter\": 5000, \"Paul\": 9999})", output, hasEntry("Paul", 9999));
+
 	}
 
 	/*
-	 parrotTrouble(true, 6) → true
-	 parrotTrouble(true, 7) → false
-	 parrotTrouble(false, 6) → false
+	 * Given an array of non-empty strings, return a Map<String, String> where for every different string in the array,
+	 * there is a key of its first character with the value of its last character. In cases where two or more words have the same
+	 * first letter but different last letters, words torwards the end of the array take precedence.
+	 *
+	 * beginningAndEnding(["code", "bug"]) → {"b": "g", "c": "e"}
+	 * beginningAndEnding(["man", "moon", "main"]) → {"m": "n"}
+	 * beginningAndEnding(["muddy", "good", "moat", "good", "night"]) → {"g": "d", "m": "t", "n": "t"}
 	 */
 	@Test
-	public void parrotTrouble() {
-		assertEquals("Input: parrotTrouble(true, 6)", true, exercises.parrotTrouble(true, 6));
-		assertEquals("Input: parrotTrouble(true, 7)", false, exercises.parrotTrouble(true, 7));
-		assertEquals("Input: parrotTrouble(false, 6)", false, exercises.parrotTrouble(false, 6));
-		assertEquals("Input: parrotTrouble(true, 21)", true, exercises.parrotTrouble(true, 21));
-		assertEquals("Input: parrotTrouble(false, 21)", false, exercises.parrotTrouble(false, 21));
-		assertEquals("Input: parrotTrouble(false, 20)", false, exercises.parrotTrouble(false, 20));
-		assertEquals("Input: parrotTrouble(true, 23)", true, exercises.parrotTrouble(true, 23));
-		assertEquals("Input: parrotTrouble(false, 23)", false, exercises.parrotTrouble(false, 23));
-		assertEquals("Input: parrotTrouble(true, 20)", false, exercises.parrotTrouble(true, 20));
-		assertEquals("Input: parrotTrouble(false, 12)", false, exercises.parrotTrouble(false, 12));
+	public void exercise05_beginningAndEnding() {
+		Map<String, String> output = exercises.beginningAndEnding(new String[] { "code", "bug" });
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output.size(), equalTo(2));
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output, hasEntry("b", "g"));
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output, hasEntry("c", "e"));
+
+		output = exercises.beginningAndEnding(new String[] { "man", "moon", "main" });
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output.size(), equalTo(1));
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output, hasEntry("m", "n"));
+
+		output = exercises.beginningAndEnding(new String[] { "muddy", "good", "moat", "good", "night" });
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output.size(), equalTo(3));
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output, hasEntry("m", "t"));
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output, hasEntry("g", "d"));
+		assertThat("beginningAndEnding([\"code\", \"bug\"])", output, hasEntry("n", "t"));
+
 	}
 
 	/*
-	 makes10(9, 10) → true
-	 makes10(9, 9) → false
-	 makes10(1, 9) → true
+	 * Given an array of strings, return a Map<String, Integer> with a key for each different string, with the value the
+	 * number of times that string appears in the array.
+	 *
+	 * ** A CLASSIC **
+	 *
+	 * wordCount(["a", "b", "a", "c", "b"]) → {"b": 2, "c": 1, "a": 2}
+	 * wordCount([]) → {}
+	 * wordCount(["c", "b", "a"]) → {"b": 1, "c": 1, "a": 1}
+	 *
 	 */
 	@Test
-	public void makes10() {
-		assertEquals("Input: makes10(9, 10)", true, exercises.makes10(9, 10));
-		assertEquals("Input: makes10(9, 9)", false, exercises.makes10(9, 9));
-		assertEquals("Input: makes10(1, 9)", true, exercises.makes10(1, 9));
-		assertEquals("Input: makes10(10, 1)", true, exercises.makes10(10, 1));
-		assertEquals("Input: makes10(10, 10)", true, exercises.makes10(10, 10));
-		assertEquals("Input: makes10(8, 2)", true, exercises.makes10(8, 2));
-		assertEquals("Input: makes10(8, 3)", false, exercises.makes10(8, 3));
-		assertEquals("Input: makes10(10, 42)", true, exercises.makes10(10, 42));
-		assertEquals("Input: makes10(12, -2)", true, exercises.makes10(12, -2));
+	public void exercise06_wordCount() {
+		Map<String, Integer> output = exercises.wordCount(new String[] { "a", "b", "a", "c", "b" });
+		assertThat("wordCount([\"a\", \"b\", \"a\", \"c\", \"b\"])", output.size(), equalTo(3));
+		assertThat("wordCount([\"a\", \"b\", \"a\", \"c\", \"b\"])", output, hasEntry("a", 2));
+		assertThat("wordCount([\"a\", \"b\", \"a\", \"c\", \"b\"])", output, hasEntry("b", 2));
+		assertThat("wordCount([\"a\", \"b\", \"a\", \"c\", \"b\"])", output, hasEntry("c", 1));
+
+		output = exercises.wordCount(new String[] { "c", "b", "a" });
+		assertThat("wordCount([\"c\", \"b\", \"a\"])", output.size(), equalTo(3));
+		assertThat("wordCount([\"c\", \"b\", \"a\"])", output, hasEntry("a", 1));
+		assertThat("wordCount([\"c\", \"b\", \"a\"])", output, hasEntry("b", 1));
+		assertThat("wordCount([\"c\", \"b\", \"a\"])", output, hasEntry("c", 1));
+
+		output = exercises.wordCount(new String[] { });
+		assertThat("wordCount([])", output.size(), equalTo(0));
+		
+		output = exercises.wordCount(new String[] { "ba", "ba", "black", "sheep" });
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\"])", output.size(), equalTo(3));
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\"])", output, hasEntry("ba", 2));
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\"])", output, hasEntry("black", 1));
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\"])", output, hasEntry("sheep", 1));
+
+		output = exercises.wordCount(new String[] { "ba", "ba", "black", "sheep", "ba", "ba", "black", "sheep" });
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\", \"ba\", \"ba\", \"black\", \"sheep\"])", output.size(), equalTo(3));
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\", \"ba\", \"ba\", \"black\", \"sheep\"])", output, hasEntry("ba", 4));
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\", \"ba\", \"ba\", \"black\", \"sheep\"])", output, hasEntry("black", 2));
+		assertThat("wordCount([\"ba\", \"ba\", \"black\", \"sheep\", \"ba\", \"ba\", \"black\", \"sheep\"])", output, hasEntry("sheep", 2));
+		
+		output = exercises.wordCount(new String[] { "apple", "apple", "banana", "apple", "carrot", "banana", "dill", "dill", "banana", "apple" });
+		assertThat("wordCount([\"apple\", \"apple\", \"banana\", \"apple\", \"carrot\", \"banana\", \"dill\", \"dill\", \"banana\", \"apple\"])", output.size(), equalTo(4));
+		assertThat("wordCount([\"apple\", \"apple\", \"banana\", \"apple\", \"carrot\", \"banana\", \"dill\", \"dill\", \"banana\", \"apple\"])", output, hasEntry("apple", 4));
+		assertThat("wordCount([\"apple\", \"apple\", \"banana\", \"apple\", \"carrot\", \"banana\", \"dill\", \"dill\", \"banana\", \"apple\"])", output, hasEntry("banana", 3));
+		assertThat("wordCount([\"apple\", \"apple\", \"banana\", \"apple\", \"carrot\", \"banana\", \"dill\", \"dill\", \"banana\", \"apple\"])", output, hasEntry("carrot", 1));
+		assertThat("wordCount([\"apple\", \"apple\", \"banana\", \"apple\", \"carrot\", \"banana\", \"dill\", \"dill\", \"banana\", \"apple\"])", output, hasEntry("dill", 2));
+
+		output = exercises.wordCount(new String[] { "apple", "apple", "apple", "apple", "apple", "apple" });
+		assertThat("wordCount([\"apple\", \"apple\", \"apple\", \"apple\", \"apple\", \"apple\"])", output.size(), equalTo(1));
+		assertThat("wordCount([\"apple\", \"apple\", \"apple\", \"apple\", \"apple\", \"apple\"])", output, hasEntry("apple", 6));
+
 	}
 
 	/*
-	 posNeg(1, -1, false) → true
-	 posNeg(-1, 1, false) → true
-	 posNeg(-4, -5, true) → true
+	 * Given an array of int values, return a Map<Integer, Integer> with a key for each int, with the value the
+	 * number of times that int appears in the array.
+	 *
+	 * ** The lesser known cousin of the the classic wordCount **
+	 *
+	 * integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44]) → {1: 1, 44: 1, 55: 1, 63: 3, 77: 1, 99:2}
+	 * integerCount([107, 33, 107, 33, 33, 33, 106, 107]) → {33: 4, 106: 1, 107: 3}
+	 * integerCount([]) → {}
+	 *
 	 */
 	@Test
-	public void posNeg() {
-		assertEquals("Input: posNeg(1, -1, false)", true, exercises.posNeg(1, -1, false));
-		assertEquals("Input: posNeg(1, -1, true)", false, exercises.posNeg(1, -1, true));
-		assertEquals("Input: posNeg(-1, 1, false)", true, exercises.posNeg(-1, 1, false));
-		assertEquals("Input: posNeg(-1, 1, true)", false, exercises.posNeg(-1, 1, true));
-		assertEquals("Input: posNeg(-4, -5, true)", true, exercises.posNeg(-4, -5, true));
-		assertEquals("Input: posNeg(-4, -5, false)", false, exercises.posNeg(-4, -5, false));
-		assertEquals("Input: posNeg(9, 12, true)", false, exercises.posNeg(9, 12, true));
-		assertEquals("Input: posNeg(9, 12, false)", false, exercises.posNeg(9, 12, false));
+	public void exercise07_integerCount() {
+		Map<Integer, Integer> output = exercises.integerCount(new int[] { 1, 99, 63, 1, 55, 77, 63, 99, 63, 44 });
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output.size(), equalTo(6));
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output, hasEntry(1, 2));
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output, hasEntry(44, 1));
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output, hasEntry(55, 1));
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output, hasEntry(63, 3));
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output, hasEntry(77, 1));
+		assertThat("integerCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44])", output, hasEntry(99, 2));
+
+		output = exercises.integerCount(new int[] { 107, 33, 107, 33, 33, 33, 106, 107 });
+		assertThat("integerCount([107, 33, 107, 33, 33, 33, 106, 107])", output.size(), equalTo(3));
+		assertThat("integerCount([107, 33, 107, 33, 33, 33, 106, 107])", output, hasEntry(33, 4));
+		assertThat("integerCount([107, 33, 107, 33, 33, 33, 106, 107])", output, hasEntry(106, 1));
+		assertThat("integerCount([107, 33, 107, 33, 33, 33, 106, 107])", output, hasEntry(107, 3));
+
+		output = exercises.integerCount(new int[0]);
+		assertThat("integerCount([])", output.size(), equalTo(0));
 	}
 
 	/*
-	 or35(3) → true
-	 or35(10) → true
-	 or35(8) → false
+	 * Given an array of strings, return a Map<String, Boolean> where each different string is a key and value
+	 * is true only if that string appears 2 or more times in the array.
+	 *
+	 * wordMultiple(["a", "b", "a", "c", "b"]) → {"b": true, "c": false, "a": true}
+	 * wordMultiple(["c", "b", "a"]) → {"b": false, "c": false, "a": false}
+	 * wordMultiple(["c", "c", "c", "c"]) → {"c": true}
+	 *
 	 */
 	@Test
-	public void or35() {
-		assertEquals("Input: or35(3)", true, exercises.or35(3));
-		assertEquals("Input: or35(10)", true, exercises.or35(10));
-		assertEquals("Input: or35(8)", false, exercises.or35(8));
-		assertEquals("Input: or35(30)", true, exercises.or35(30));
+	public void exercise08_wordMultiple() {
+		Map<String, Boolean> output = exercises.wordMultiple(new String[] { "a", "b", "a", "c", "b" });
+		assertThat("wordMultiple([\"a\", \"b\", \"a\", \"c\", \"b\"])", output, hasEntry("b", true));
+		assertThat("wordMultiple([\"a\", \"b\", \"a\", \"c\", \"b\"])", output, hasEntry("c", false));
+		assertThat("wordMultiple([\"a\", \"b\", \"a\", \"c\", \"b\"])", output, hasEntry("a", true));
+
+		exercises.wordMultiple(new String[] { "c", "b", "a" });
+		assertThat("wordMultiple([\"c\", \"b\", \"a\"])", output, hasEntry("b", true));
+		assertThat("wordMultiple([\"c\", \"b\", \"a\"])", output, hasEntry("c", false));
+		assertThat("wordMultiple([\"c\", \"b\", \"a\"])", output, hasEntry("a", true));
 	}
 
 	/*
-	 icyHot(120, -1) → true
-	 icyHot(-1, 120) → true
-	 icyHot(2, 120) → false
+	 * Given two maps, Map<String, Integer>, merge the two into a new map, Map<String, Integer> where keys in Map2,
+	 * and their Integer values, are added to the Integer values of matching keys in Map1. Return the new map.
+	 *
+	 * Unmatched keys and their Integer values in Map2 are simply added to Map1.
+	 *
+	 * consolidateInventory({"SKU1": 100, "SKU2": 53, "SKU3": 44} {"SKU2":11, "SKU4": 5})
+	 * 	 → {"SKU1": 100, "SKU2": 64, "SKU3": 44, "SKU4": 5}
+	 *
 	 */
 	@Test
-	public void icyHot() {
-		assertEquals("Input: icyHot(120, -1)", true, exercises.icyHot(120, -1));
-		assertEquals("Input: icyHot(-1, 120)", true, exercises.icyHot(-1, 120));
-		assertEquals("Input: icyHot(2, 120)", false, exercises.icyHot(2, 120));
-		assertEquals("Input: icyHot(2, 99)", false, exercises.icyHot(2, 99));
-		assertEquals("Input: icyHot(-2, 99)", false, exercises.icyHot(-2, 99));
-		assertEquals("Input: icyHot(0, 100)", false, exercises.icyHot(0, 100));
+	public void exercise09_consolidateInventory() {
+		Map<String, Integer> inventory1 = new HashMap<>();
+		inventory1.put("SKU1", 100);
+		inventory1.put("SKU2", 53);
+		inventory1.put("SKU3", 44);
+
+		Map<String, Integer> inventory2 = new HashMap<>();
+		inventory2.put("SKU2", 11);
+		inventory2.put("SKU4", 5);
+
+		Map<String, Integer> output = exercises.consolidateInventory(inventory1, inventory2);
+		assertThat("consolidateInventory({\"SKU1\": 100, \"SKU2\": 53, \"SKU3\": 44} {\"SKU2\":11, \"SKU4\": 5})",
+				output.size(), equalTo(4));
+		assertThat("consolidateInventory({\"SKU1\": 100, \"SKU2\": 53, \"SKU3\": 44} {\"SKU2\":11, \"SKU4\": 5})",
+				output, hasEntry("SKU1", 100));
+		assertThat("consolidateInventory({\"SKU1\": 100, \"SKU2\": 53, \"SKU3\": 44} {\"SKU2\":11, \"SKU4\": 5})",
+				output, hasEntry("SKU2", 64));
+		assertThat("consolidateInventory({\"SKU1\": 100, \"SKU2\": 53, \"SKU3\": 44} {\"SKU2\":11, \"SKU4\": 5})",
+				output, hasEntry("SKU3", 44));
+		assertThat("consolidateInventory({\"SKU1\": 100, \"SKU2\": 53, \"SKU3\": 44} {\"SKU2\":11, \"SKU4\": 5})",
+				output, hasEntry("SKU4", 5));
+
+		
+		inventory1 = new HashMap<>();
+		inventory1.put("SKU_4", 0);
+		inventory1.put("SKU_23", 53);
+		inventory1.put("SKU_39", 66);
+		inventory1.put("SKU_X", 8);
+
+		inventory2 = new HashMap<>();
+		inventory2.put("SKU_4", 68);
+		inventory2.put("SKU_23", 33);
+		inventory2.put("SKU_50", 444);
+		inventory2.put("SKU_X", 1);
+
+		output = exercises.consolidateInventory(inventory1, inventory2);
+		assertThat("consolidateInventory({\"SKU_4\": 0, \"SKU_23\": 53, \"SKU_39\": 66, \"SKU_X\": 8} {\"SKU_4\":68, \"SKU_23\": 33, \"SKU_50\": 444, \"SKU_X\": 1})",
+				output.size(), equalTo(5));
+		assertThat("consolidateInventory({\"SKU_4\": 0, \"SKU_23\": 53, \"SKU_39\": 66, \"SKU_X\": 8} {\"SKU_4\":68, \"SKU_23\": 33, \"SKU_50\": 444, \"SKU_X\": 1})",
+				output, hasEntry("SKU_4", 68));
+		assertThat("consolidateInventory({\"SKU_4\": 0, \"SKU_23\": 53, \"SKU_39\": 66, \"SKU_X\": 8} {\"SKU_4\":68, \"SKU_23\": 33, \"SKU_50\": 444, \"SKU_X\": 1})",
+				output, hasEntry("SKU_23", 86));
+		assertThat("consolidateInventory({\"SKU_4\": 0, \"SKU_23\": 53, \"SKU_39\": 66, \"SKU_X\": 8} {\"SKU_4\":68, \"SKU_23\": 33, \"SKU_50\": 444, \"SKU_X\": 1})",
+				output, hasEntry("SKU_39", 66));
+		assertThat("consolidateInventory({\"SKU_4\": 0, \"SKU_23\": 53, \"SKU_39\": 66, \"SKU_X\": 8} {\"SKU_4\":68, \"SKU_23\": 33, \"SKU_50\": 444, \"SKU_X\": 1})",
+				output, hasEntry("SKU_50", 444));
+		assertThat("consolidateInventory({\"SKU_4\": 0, \"SKU_23\": 53, \"SKU_39\": 66, \"SKU_X\": 8} {\"SKU_4\":68, \"SKU_23\": 33, \"SKU_50\": 444, \"SKU_X\": 1})",
+				output, hasEntry("SKU_X", 9));
+
+		
+		inventory1 = new HashMap<>();
+		inventory1.put("Lorem", 11);
+		inventory1.put("Ipsum", 22);
+		inventory1.put("Dolor", 33);
+		inventory1.put("Sit", 44);
+		inventory1.put("Amet", 55);
+
+		inventory2 = new HashMap<>();
+		//nothing
+
+		output = exercises.consolidateInventory(inventory1, inventory2);
+		assertThat("consolidateInventory({\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55} { })",
+				output.size(), equalTo(5));
+		assertThat("consolidateInventory({\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55} { })",
+				output, hasEntry("Lorem", 11));
+		assertThat("consolidateInventory({\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55} { })",
+				output, hasEntry("Ipsum", 22));
+		assertThat("consolidateInventory({\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55} { })",
+				output, hasEntry("Dolor", 33));
+		assertThat("consolidateInventory({\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55} { })",
+				output, hasEntry("Sit", 44));
+		assertThat("consolidateInventory({\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55} { })",
+				output, hasEntry("Amet", 55));
+		
+		
+		inventory1 = new HashMap<>();
+		//nothing
+
+		inventory2 = new HashMap<>();
+		inventory2.put("Lorem", 11);
+		inventory2.put("Ipsum", 22);
+		inventory2.put("Dolor", 33);
+		inventory2.put("Sit", 44);
+		inventory2.put("Amet", 55);
+
+		output = exercises.consolidateInventory(inventory1, inventory2);
+		assertThat("consolidateInventory({ } {\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55})",
+				output.size(), equalTo(5));
+		assertThat("consolidateInventory({ } {\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55})",
+				output, hasEntry("Lorem", 11));
+		assertThat("consolidateInventory({ } {\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55})",
+				output, hasEntry("Ipsum", 22));
+		assertThat("consolidateInventory({ } {\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55})",
+				output, hasEntry("Dolor", 33));
+		assertThat("consolidateInventory({ } {\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55})",
+				output, hasEntry("Sit", 44));
+		assertThat("consolidateInventory({ } {\"Lorem\": 11, \"Ipsum\": 22, \"Dolor\": 33, \"Sit\": 44, \"Amet\": 55})",
+				output, hasEntry("Amet", 55));
 	}
 
 	/*
-	 in1020(12, 99) → true
-	 in1020(21, 12) → true
-	 in1020(8, 99) → false
+	 * Just when you thought it was safe to get back in the water --- last2Revisited!!!!
+	 *
+	 * Given an array of strings, for each string, the count of the number of times that a substring length 2 appears
+	 * in the string and also as the last 2 chars of the string, so "hixxxhi" yields 1.
+	 *
+	 * We don't count the end substring, but the substring may overlap a prior position by one.  For instance, "xxxx"
+	 * has a count of 2, one pair at position 0, and the second at position 1. The third pair at position 2 is the
+	 * end substring, which we don't count.
+	 *
+	 * Return Map<String, Integer>, where the key is string from the array, and its last2 count.
+	 *
+	 * last2Revisited(["hixxhi", "xaxxaxaxx", "axxxaaxx"]) → {"hixxhi": 1, "xaxxaxaxx": 1, "axxxaaxx": 2}
+	 *
 	 */
 	@Test
-	public void in1020() {
-		assertEquals("Input: in1020(12, 99)", true, exercises.in1020(12, 99));
-		assertEquals("Input: in1020(21, 12)", true, exercises.in1020(21, 12));
-		assertEquals("Input: in1020(8, 99)", false, exercises.in1020(8, 99));
-		assertEquals("Input: in1020(11, 19)", true, exercises.in1020(11, 19));
-	}
+	public void exercise10_last2Revisited() {
+		Map<String, Integer> output = exercises.last2Revisited(new String[] { "hixxhi", "xaxxaxaxx", "axxxaaxx" });
+		assertThat("last2Revisited([\"hixxhi\", \"xaxxaxaxx\", \"axxxaaxx\"])", output.size(), equalTo(3));
+		assertThat("last2Revisited([\"hixxhi\", \"xaxxaxaxx\", \"axxxaaxx\"])", output, hasEntry("hixxhi", 1));
+		assertThat("last2Revisited([\"hixxhi\", \"xaxxaxaxx\", \"axxxaaxx\"])", output, hasEntry("xaxxaxaxx", 1));
+		assertThat("last2Revisited([\"hixxhi\", \"xaxxaxaxx\", \"axxxaaxx\"])", output, hasEntry("axxxaaxx", 2));
 
-	/*
-	 hasTeen(13, 20, 10) → true
-	 hasTeen(20, 19, 10) → true
-	 hasTeen(20, 10, 13) → true
-	 */
-	@Test
-	public void hasTeen() {
-		assertEquals("Input: hasTeen(13, 20, 10)", true, exercises.hasTeen(13, 20, 10));
-		assertEquals("Input: hasTeen(20, 19, 10)", true, exercises.hasTeen(20, 19, 10));
-		assertEquals("Input: hasTeen(20, 10, 13)", true, exercises.hasTeen(20, 10, 13));
-		assertEquals("Input: hasTeen(13, 14, 10)", true, exercises.hasTeen(13, 14, 10));
-		assertEquals("Input: hasTeen(13, 10, 14)", true, exercises.hasTeen(13, 10, 14));
-		assertEquals("Input: hasTeen(10, 13, 19)", true, exercises.hasTeen(10, 13, 19));
-		assertEquals("Input: hasTeen(13, 14, 15)", true, exercises.hasTeen(13, 14, 15));
-		assertEquals("Input: hasTeen(1, 2, 3)", false, exercises.hasTeen(1, 2, 3));
-		assertEquals("Input: hasTeen(21, 22, 23)", false, exercises.hasTeen(21, 22, 23));
-		assertEquals("Input: hasTeen(1, 2, 23)", false, exercises.hasTeen(1, 2, 23));
-	}
+		output = exercises.last2Revisited(new String[] { "banana", "kiwi", "Hahahahaha" });
+		assertThat("last2Revisited([\"hixxhi\", \"xaxxaxaxx\", \"axxxaaxx\"])", output.size(), equalTo(3));
+		assertThat("last2Revisited([\"banana\", \"kiwi\", \"Hahahahaha\"])", output, hasEntry("banana", 1));
+		assertThat("last2Revisited([\"banana\", \"kiwi\", \"Hahahahaha\"])", output, hasEntry("kiwi", 0));
+		assertThat("last2Revisited([\"banana\", \"kiwi\", \"Hahahahaha\"])", output, hasEntry("Hahahahaha", 3));
 
-	/*
-	 loneTeen(13, 99) → true
-	 loneTeen(21, 19) → true
-	 loneTeen(13, 13) → false
-	 */
-	@Test
-	public void loneTeen() {
-		assertEquals("Input: loneTeen(13, 99)", true, exercises.loneTeen(13, 99));
-		assertEquals("Input: loneTeen(21, 19)", true, exercises.loneTeen(21, 19));
-		assertEquals("Input: loneTeen(13, 13)", false, exercises.loneTeen(13, 13));
-		assertEquals("Input: loneTeen(12, 20)", false, exercises.loneTeen(12, 20));
-		assertEquals("Input: loneTeen(20, 12)", false, exercises.loneTeen(20, 12));
-		assertEquals("Input: loneTeen(12, 2)", false, exercises.loneTeen(12, 2));
-		assertEquals("Input: loneTeen(23, 20)", false, exercises.loneTeen(23, 20));
-	}
+		output = exercises.last2Revisited(new String[] {});
+		assertThat("last2Revisited([ ])", output.size(), equalTo(0));
 
-	/*
-	 intMax(1, 2, 3) → 3
-	 intMax(1, 3, 2) → 3
-	 intMax(3, 2, 1) → 3
-	 */
-	@Test
-	public void intMax() {
-		assertEquals("Input: intMax(1, 2, 3)", 3, exercises.intMax(1, 2, 3));
-		assertEquals("Input: intMax(1, 3, 2)", 3, exercises.intMax(1, 3, 2));
-		assertEquals("Input: intMax(3, 2, 1)", 3, exercises.intMax(3, 2, 1));
-		assertEquals("Input: intMax(4, 4, 1)", 4, exercises.intMax(4, 4, 1));
-		assertEquals("Input: intMax(5, 3, 5)", 5, exercises.intMax(5, 2, 5));
-		assertEquals("Input: intMax(3, 5, 5)", 5, exercises.intMax(3, 5, 5));
-		assertEquals("Input: intMax(9, 1, 1)", 9, exercises.intMax(9, 1, 1));
-		assertEquals("Input: intMax(9, 9, 9)", 9, exercises.intMax(9, 9, 9));
-	}
-
-	/*
-	 in3050(30, 31) → true
-	 in3050(30, 41) → false
-	 in3050(40, 50) → true
-	 */
-	@Test
-	public void in3050() {
-		assertEquals("Input: in3050(30, 31)", true, exercises.in3050(30, 31));
-		assertEquals("Input: in3050(30, 41)", false, exercises.in3050(30, 41));
-		assertEquals("Input: in3050(40, 50)", true, exercises.in3050(40, 50));
-		assertEquals("Input: in3050(20, 21)", false, exercises.in3050(20, 21));
-		assertEquals("Input: in3050(30, 5)", false, exercises.in3050(30, 5));
-		assertEquals("Input: in3050(40, 75)", false, exercises.in3050(40, 75));
-	}
-
-	/*
-	 max1020(11, 19) → 19
-	 max1020(19, 11) → 19
-	 max1020(11, 9) → 11
-	 */
-	@Test
-	public void max1020() {
-		assertEquals("Input: max1020(11, 19)", 19, exercises.max1020(11, 19));
-		assertEquals("Input: max1020(19, 11)", 19, exercises.max1020(19, 11));
-		assertEquals("Input: max1020(11, 9)", 11, exercises.max1020(11, 9));
-		assertEquals("Input: max1020(11, 21)", 11, exercises.max1020(11, 21));
-		assertEquals("Input: max1020(9, 21)", 0, exercises.max1020(9, 21));
-		assertEquals("Input: max1020(1, 9)", 0, exercises.max1020(1, 9));
-		assertEquals("Input: max1020(21, 100)", 0, exercises.max1020(21, 100));
-	}
-
-	/*
-	 cigarParty(30, false) → false
-	 cigarParty(50, false) → true
-	 cigarParty(70, true) → true
-	 */
-	@Test
-	public void cigarParty() {
-		assertEquals("Input: cigarParty(30, false)", false, exercises.cigarParty(30, false));
-		assertEquals("Input: cigarParty(50, false)", true, exercises.cigarParty(50, false));
-		assertEquals("Input: cigarParty(70, true)", true, exercises.cigarParty(70, true));
-		assertEquals("Input: cigarParty(70, false)", false, exercises.cigarParty(70, false));
-		assertEquals("Input: cigarParty(30, true)", false, exercises.cigarParty(30, true));
-		assertEquals("Input: cigarParty(40, true)", true, exercises.cigarParty(40, true));
-		assertEquals("Input: cigarParty(40, false)", true, exercises.cigarParty(40, false));
-		assertEquals("Input: cigarParty(60, false)", true, exercises.cigarParty(60, false));
-	}
-
-	/*
-	 dateFashion(5, 10) → 2
-	 dateFashion(5, 2) → 0
-	 dateFashion(5, 5) → 1
-	 */
-	@Test
-	public void dateFashion() {
-		assertEquals("Input: dateFashion(5, 10)", 2, exercises.dateFashion(5, 10));
-		assertEquals("Input: dateFashion(10, 5)", 2, exercises.dateFashion(10, 5));
-		assertEquals("Input: dateFashion(8, 8)", 2, exercises.dateFashion(8, 8));
-		assertEquals("Input: dateFashion(2, 10)", 0, exercises.dateFashion(2, 10));
-		assertEquals("Input: dateFashion(10, 1)", 0, exercises.dateFashion(10, 1));
-		assertEquals("Input: dateFashion(5, 2)", 0, exercises.dateFashion(5, 2));
-		assertEquals("Input: dateFashion(2, 2)", 0, exercises.dateFashion(2, 2));
-		assertEquals("Input: dateFashion(5, 5)", 1, exercises.dateFashion(5, 5));
-	}
-
-	/*
-	 squirrelPlay(70, false) → true
-	 squirrelPlay(95, false) → false
-	 squirrelPlay(95, true) → true
-	 */
-	@Test
-	public void squirrelPlay() {
-		assertEquals("Input: squirrelPlay(70, false)", true, exercises.squirrelPlay(70, false));
-		assertEquals("Input: squirrelPlay(95, false)", false, exercises.squirrelPlay(95, false));
-		assertEquals("Input: squirrelPlay(95, true)", true, exercises.squirrelPlay(95, true));
-		assertEquals("Input: squirrelPlay(60, false)", true, exercises.squirrelPlay(60, false));
-		assertEquals("Input: squirrelPlay(90, false)", true, exercises.squirrelPlay(90, false));
-		assertEquals("Input: squirrelPlay(60, true)", true, exercises.squirrelPlay(60, true));
-		assertEquals("Input: squirrelPlay(90, true)", true, exercises.squirrelPlay(90, true));
-		assertEquals("Input: squirrelPlay(100, true)", true, exercises.squirrelPlay(100, true));
-		assertEquals("Input: squirrelPlay(101, true)", false, exercises.squirrelPlay(101, true));
-		assertEquals("Input: squirrelPlay(101, false)", false, exercises.squirrelPlay(101, false));
-	}
-
-	/*
-	 yourCakeAndEatItToo(4.99, false) → "standard"
-	 yourCakeAndEatItToo(4.99, true) → "standard"
-	 yourCakeAndEatItToo(7.00, false) → "standard"
-	 yourCakeAndEatItToo(7.00, true) → "special"
-	 yourCakeAndEatItToo(10.00, false) → "standard"
-	 yourCakeAndEatItToo(10.00, true) → "special"
-	 yourCakeAndEatItToo(10.01, false) → "special"
-	 yourCakeAndEatItToo(10.01, true) → "ginormous"
-	 */
-	@Test
-	public void yourCakeAndEatItToo() {
-		assertEquals("Input: yourCakeAndEatItToo(4.99, false)", "standard", exercises.yourCakeAndEatItToo(4.99, false));
-		assertEquals("Input: yourCakeAndEatItToo(4.99, true)", "standard", exercises.yourCakeAndEatItToo(4.99, true));
-		assertEquals("Input: yourCakeAndEatItToo(7.00, false)", "standard", exercises.yourCakeAndEatItToo(7.00, false));
-		assertEquals("Input: yourCakeAndEatItToo(7.00, true)", "special", exercises.yourCakeAndEatItToo(7.00, true));
-		assertEquals("Input: yourCakeAndEatItToo(10.00, false)", "standard", exercises.yourCakeAndEatItToo(10.00, false));
-		assertEquals("Input: yourCakeAndEatItToo(10.00, true)", "special", exercises.yourCakeAndEatItToo(10.00, true));
-		assertEquals("Input: yourCakeAndEatItToo(10.01, false)", "special", exercises.yourCakeAndEatItToo(10.01, false));
-		assertEquals("Input: yourCakeAndEatItToo(10.01, true)", "ginormous", exercises.yourCakeAndEatItToo(10.01, true));
-		assertEquals("Input: yourCakeAndEatItToo(15.00, false)", "special", exercises.yourCakeAndEatItToo(15.00, false));
-		assertEquals("Input: yourCakeAndEatItToo(15.00, true)", "ginormous", exercises.yourCakeAndEatItToo(15.00, true));
-		assertEquals("Input: yourCakeAndEatItToo(15.01, false)", "ginormous", exercises.yourCakeAndEatItToo(15.01, false));
-		assertEquals("Input: yourCakeAndEatItToo(15.01, true)", "ginormous", exercises.yourCakeAndEatItToo(15.01, true));
-	}
-
-	/*
-	 sortaSum(3, 4) → 7
-	 sortaSum(9, 4) → 20
-	 sortaSum(10, 11) → 21
-	 */
-	@Test
-	public void sortaSum() {
-		assertEquals("Input: sortaSum(3, 4)", 7, exercises.sortaSum(3, 4));
-		assertEquals("Input: sortaSum(9, 4)", 20, exercises.sortaSum(9, 4));
-		assertEquals("Input: sortaSum(10, 11)", 21, exercises.sortaSum(10, 11));
-		assertEquals("Input: sortaSum(6, 4)", 20, exercises.sortaSum(6, 4));
-		assertEquals("Input: sortaSum(10, 9)", 20, exercises.sortaSum(10, 9));
-		assertEquals("Input: sortaSum(10, 10)", 20, exercises.sortaSum(10, 10));
-		assertEquals("Input: sortaSum(5, 4)", 9, exercises.sortaSum(5, 4));
-	}
-
-	/*
-	 alarmClock(1, false) → "7:00"
-	 alarmClock(5, false) → "7:00"
-	 alarmClock(0, false) → "10:00"
-	 */
-	@Test
-	public void alarmClock() {
-		assertEquals("Input: alarmClock(1, false)", "7:00", exercises.alarmClock(1, false));
-		assertEquals("Input: alarmClock(5, false)", "7:00", exercises.alarmClock(5, false));
-		assertEquals("Input: alarmClock(0, false)", "10:00", exercises.alarmClock(0, false));
-		assertEquals("Input: alarmClock(2, false)", "7:00", exercises.alarmClock(2, false));
-		assertEquals("Input: alarmClock(3, false)", "7:00", exercises.alarmClock(3, false));
-		assertEquals("Input: alarmClock(4, false)", "7:00", exercises.alarmClock(4, false));
-		assertEquals("Input: alarmClock(5, false)", "7:00", exercises.alarmClock(5, false));
-		assertEquals("Input: alarmClock(6, false)", "10:00", exercises.alarmClock(6, false));
-		assertEquals("Input: alarmClock(1, true)", "10:00", exercises.alarmClock(1, true));
-		assertEquals("Input: alarmClock(2, true)", "10:00", exercises.alarmClock(2, true));
-		assertEquals("Input: alarmClock(3, true)", "10:00", exercises.alarmClock(3, true));
-		assertEquals("Input: alarmClock(4, true)", "10:00", exercises.alarmClock(4, true));
-		assertEquals("Input: alarmClock(5, true)", "10:00", exercises.alarmClock(5, true));
-		assertEquals("Input: alarmClock(0, true)", "off", exercises.alarmClock(0, true));
-		assertEquals("Input: alarmClock(6, true)", "off", exercises.alarmClock(6, true));
-	}
-
-	/*
-	 in1To10(5, false) → true
-	 in1To10(11, false) → false
-	 in1To10(11, true) → true
-	 */
-	@Test
-	public void in1To10() {
-		assertEquals("Input: in1To10(5, false)", true, exercises.in1To10(5, false));
-		assertEquals("Input: in1To10(11, false)", false, exercises.in1To10(11, false));
-		assertEquals("Input: in1To10(11, true)", true, exercises.in1To10(11, true));
-		assertEquals("Input: in1To10(1, false)", true, exercises.in1To10(1, false));
-		assertEquals("Input: in1To10(10, false)", true, exercises.in1To10(10, false));
-		assertEquals("Input: in1To10(-1, false)", false, exercises.in1To10(-1, false));
-		assertEquals("Input: in1To10(0, false)", false, exercises.in1To10(0, false));
-		assertEquals("Input: in1To10(11, false)", false, exercises.in1To10(11, false));
-		assertEquals("Input: in1To10(1, true)", true, exercises.in1To10(1, true));
-		assertEquals("Input: in1To10(10, true)", true, exercises.in1To10(10, true));
-		assertEquals("Input: in1To10(-1, true)", true, exercises.in1To10(-1, true));
-		assertEquals("Input: in1To10(0, true)", true, exercises.in1To10(0, true));
-		assertEquals("Input: in1To10(5, true)", false, exercises.in1To10(5, true));
-	}
-
-	/*
-	 specialEleven(22) → true
-	 specialEleven(23) → true
-	 specialEleven(24) → false
-	 */
-	@Test
-	public void specialEleven() {
-		assertEquals("Input: specialEleven(22)", true, exercises.specialEleven(22));
-		assertEquals("Input: specialEleven(23)", true, exercises.specialEleven(23));
-		assertEquals("Input: specialEleven(24)", false, exercises.specialEleven(24));
-		assertEquals("Input: specialEleven(11)", true, exercises.specialEleven(11));
-		assertEquals("Input: specialEleven(12)", true, exercises.specialEleven(12));
-		assertEquals("Input: specialEleven(13)", false, exercises.specialEleven(13));
-		assertEquals("Input: specialEleven(10)", false, exercises.specialEleven(10));
-	}
-
-	/*
-	 more20(20) → false
-	 more20(21) → true
-	 more20(22) → true
-	 */
-	@Test
-	public void more20() {
-		assertEquals("Input: more20(20)", false, exercises.more20(20));
-		assertEquals("Input: more20(21)", true, exercises.more20(21));
-		assertEquals("Input: more20(22)", true, exercises.more20(22));
-		assertEquals("Input: more20(0)", false, exercises.more20(0));
-		assertEquals("Input: more20(1)", true, exercises.more20(1));
-		assertEquals("Input: more20(2)", true, exercises.more20(2));
-		assertEquals("Input: more20(40)", false, exercises.more20(40));
-		assertEquals("Input: more20(41)", true, exercises.more20(41));
-		assertEquals("Input: more20(42)", true, exercises.more20(42));
-	}
-
-	/*
-	 old35(3) → true
-	 old35(10) → true
-	 old35(15) → false
-	 */
-	@Test
-	public void old35() {
-		assertEquals("Input: old35(3)", true, exercises.old35(3));
-		assertEquals("Input: old35(10)", true, exercises.old35(10));
-		assertEquals("Input: old35(15)", false, exercises.old35(15));
-		assertEquals("Input: old35(13)", false, exercises.old35(13));
-	}
-
-	/*
-	 less20(18) → true
-	 less20(19) → true
-	 less20(20) → false
-	 */
-	@Test
-	public void less20() {
-		assertEquals("Input: less20(18)", true, exercises.less20(18));
-		assertEquals("Input: less20(19)", true, exercises.less20(19));
-		assertEquals("Input: less20(20)", false, exercises.less20(20));
-		assertEquals("Input: less20(38)", true, exercises.less20(38));
-		assertEquals("Input: less20(39)", true, exercises.less20(39));
-		assertEquals("Input: less20(40)", false, exercises.less20(40));
-		assertEquals("Input: less20(21)", false, exercises.less20(21));
-		assertEquals("Input: less20(41)", false, exercises.less20(41));
-	}
-
-	/*
-	 nearTen(12) → true
-	 nearTen(17) → false
-	 nearTen(19) → true
-	 */
-	@Test
-	public void nearTen() {
-		assertEquals("Input: nearTen(12)", true, exercises.nearTen(12));
-		assertEquals("Input: nearTen(17)", false, exercises.nearTen(17));
-		assertEquals("Input: nearTen(19)", true, exercises.nearTen(19));
-		assertEquals("Input: nearTen(10)", true, exercises.nearTen(10));
-		assertEquals("Input: nearTen(20)", true, exercises.nearTen(20));
-		assertEquals("Input: nearTen(8)", true, exercises.nearTen(8));
-		assertEquals("Input: nearTen(19)", true, exercises.nearTen(19));
-		assertEquals("Input: nearTen(21)", true, exercises.nearTen(21));
-		assertEquals("Input: nearTen(23)", false, exercises.nearTen(23));
-	}
-
-	/*
-	 teenSum(3, 4) → 7
-	 teenSum(10, 13) → 19
-	 teenSum(13, 2) → 19
-	 */
-	@Test
-	public void teenSum() {
-		assertEquals("Input: teenSum(3, 4)", 7, exercises.teenSum(3, 4));
-		assertEquals("Input: teenSum(10, 13)", 19, exercises.teenSum(10, 13));
-		assertEquals("Input: teenSum(13, 2)", 19, exercises.teenSum(13, 2));
-		assertEquals("Input: teenSum(15, 15)", 19, exercises.teenSum(15, 15));
-		assertEquals("Input: teenSum(12, 20)", 32, exercises.teenSum(12, 20));
-		assertEquals("Input: teenSum(21, 22)", 43, exercises.teenSum(21, 22));
-	}
-
-	/*
-	 answerCell(false, false, false) → true
-	 answerCell(false, false, true) → false
-	 answerCell(true, false, false) → false
-	 */
-	@Test
-	public void answerCell() {
-		assertEquals("Input: answerCell(false, false, false)", true, exercises.answerCell(false, false, false));
-		assertEquals("Input: answerCell(false, false, true)", false, exercises.answerCell(false, false, true));
-		assertEquals("Input: answerCell(true, false, false)", false, exercises.answerCell(true, false, false));
-		assertEquals("Input: answerCell(false, true, false)", true, exercises.answerCell(false, true, false));
-		assertEquals("Input: answerCell(false, true, true)", false, exercises.answerCell(false, true, true));
-		assertEquals("Input: answerCell(true, false, true)", false, exercises.answerCell(true, false, true));
-		assertEquals("Input: answerCell(true, true, false)", true, exercises.answerCell(true, true, false));
-		assertEquals("Input: answerCell(true, true, true)", false, exercises.answerCell(true, true, true));
-	}
-
-	/*
-	 teaParty(6, 8) → 1
-	 teaParty(3, 8) → 0
-	 teaParty(20, 6) → 2
-	 */
-	@Test
-	public void teaParty() {
-		assertEquals("Input: teaParty(6, 8)", 1, exercises.teaParty(6, 8));
-		assertEquals("Input: teaParty(3, 8)", 0, exercises.teaParty(3, 8));
-		assertEquals("Input: teaParty(20, 6)", 2, exercises.teaParty(20, 6));
-		assertEquals("Input: teaParty(5, 5)", 1, exercises.teaParty(5, 5));
-		assertEquals("Input: teaParty(5, 10)", 2, exercises.teaParty(5, 10));
-		assertEquals("Input: teaParty(10, 5)", 2, exercises.teaParty(10, 5));
-		assertEquals("Input: teaParty(20, 25)", 1, exercises.teaParty(20, 25));
-		assertEquals("Input: teaParty(4, 5)", 0, exercises.teaParty(4, 5));
-		assertEquals("Input: teaParty(5, 4)", 0, exercises.teaParty(5, 4));
-	}
-
-	/*
-	 twoAsOne(1, 2, 3) → true
-	 twoAsOne(3, 1, 2) → true
-	 twoAsOne(3, 2, 2) → false
-	 */
-	@Test
-	public void twoAsOne() {
-		assertEquals("Input: twoAsOne(1, 2, 3)", true, exercises.twoAsOne(1, 2, 3));
-		assertEquals("Input: twoAsOne(3, 1, 2)", true, exercises.twoAsOne(3, 1, 2));
-		assertEquals("Input: twoAsOne(3, 2, 2)", false, exercises.twoAsOne(3, 2, 2));
-		assertEquals("Input: twoAsOne(3, 2, 1)", true, exercises.twoAsOne(3, 2, 1));
-		assertEquals("Input: twoAsOne(2, 3, 1)", true, exercises.twoAsOne(2, 3, 1));
-	}
-
-	/*
-	 inOrder(1, 2, 4, false) → true
-	 inOrder(1, 2, 1, false) → false
-	 inOrder(1, 1, 2, true) → true
-	 */
-	@Test
-	public void inOrder() {
-		assertEquals("Input: inOrder(1, 2, 4, false)", true, exercises.inOrder(1, 2, 4, false));
-		assertEquals("Input: inOrder(1, 2, 1, false)", false, exercises.inOrder(1, 2, 1, false));
-		assertEquals("Input: inOrder(1, 1, 2, true)", true, exercises.inOrder(1, 1, 2, true));
-		assertEquals("Input: inOrder(4, 2, 3, false)", false, exercises.inOrder(4, 2, 3, false));
-		assertEquals("Input: inOrder(1, 1, 2, false)", false, exercises.inOrder(1, 1, 2, false));
-		assertEquals("Input: inOrder(1, 2, 2, false)", false, exercises.inOrder(1, 2, 2, false));
-		assertEquals("Input: inOrder(5, 1, 2, true)", true, exercises.inOrder(5, 1, 2, true));
-		assertEquals("Input: inOrder(5, 1, 1, true)", false, exercises.inOrder(5, 1, 1, true));
-	}
-
-	/*
-	 inOrderEqual(2, 5, 11, false) → true
-	 inOrderEqual(5, 7, 6, false) → false
-	 inOrderEqual(5, 5, 7, true) → true
-	 */
-	@Test
-	public void inOrderEqual() {
-		assertEquals("Input: inOrderEqual(2, 5, 11, false)", true, exercises.inOrderEqual(2, 5, 11, false));
-		assertEquals("Input: inOrderEqual(5, 7, 6, false)", false, exercises.inOrderEqual(5, 7, 6, false));
-		assertEquals("Input: inOrderEqual(5, 5, 7, true)", true, exercises.inOrderEqual(5, 5, 7, true));
-		assertEquals("Input: inOrderEqual(5, 7, 6, true)", false, exercises.inOrderEqual(5, 7, 6, true));
-		assertEquals("Input: inOrderEqual(5, 5, 5, true)", true, exercises.inOrderEqual(5, 5, 5, true));
-		assertEquals("Input: inOrderEqual(1, 5, 5, true)", true, exercises.inOrderEqual(1, 5, 5, true));
-		assertEquals("Input: inOrderEqual(6, 5, 5, true)", false, exercises.inOrderEqual(6, 5, 5, true));
-	}
-
-	/*
-	 loneSum(1, 2, 3) → 6
-	 loneSum(3, 2, 3) → 2
-	 loneSum(3, 3, 3) → 0
-	 */
-	@Test
-	public void loneSum() {
-		assertEquals("Input: loneSum(1, 2, 3)", 6, exercises.loneSum(1, 2, 3));
-		assertEquals("Input: loneSum(3, 2, 3)", 2, exercises.loneSum(3, 2, 3));
-		assertEquals("Input: loneSum(3, 3, 3)", 0, exercises.loneSum(3, 3, 3));
-		assertEquals("Input: loneSum(0, 1, 1)", 0, exercises.loneSum(0, 1, 1));
-		assertEquals("Input: loneSum(3, 1, 1)", 3, exercises.loneSum(3, 1, 1));
-		assertEquals("Input: loneSum(1, 1, 5)", 5, exercises.loneSum(1, 1, 5));
-	}
-
-	/*
-	 luckySum(1, 2, 3) → 6
-	 luckySum(1, 2, 13) → 3
-	 luckySum(1, 13, 3) → 1
-	 luckySum(13, 1, 3) → 3
-	 luckySum(13, 13, 3) → 0
-	 */
-	@Test
-	public void luckySum() {
-		assertEquals("Input: luckySum(1, 2, 3)", 6, exercises.luckySum(1, 2, 3));
-		assertEquals("Input: luckySum(1, 2, 13)", 3, exercises.luckySum(1, 2, 13));
-		assertEquals("Input: luckySum(1, 13, 3)", 1, exercises.luckySum(1, 13, 3));
-		assertEquals("Input: luckySum(13, 1, 3)", 3, exercises.luckySum(13, 1, 3));
-		assertEquals("Input: luckySum(13, 13, 3)", 0, exercises.luckySum(13, 13, 3));
-		assertEquals("Input: luckySum(13, 13, 13)", 0, exercises.luckySum(13, 13, 13));
 	}
 
 }

@@ -1,572 +1,308 @@
 package com.techelevator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Exercises {
 
     /*
-     1. The parameter weekday is true if it is a weekday, and the parameter vacation is true if we are on
-     vacation. We sleep in if it is not a weekday or we're on vacation. Return true if we sleep in.
-     sleepIn(false, false) → true
-     sleepIn(true, false) → false
-     sleepIn(false, true) → true
+     * Given the name of an animal, return the name of a group of that animal
+     * (e.g. "Elephant" -> "Herd", "Rhino" - "Crash").
+     *
+     * The animal name should be case insensitive so "elephant", "Elephant", and
+     * "ELEPHANT" should all return "herd".
+     *
+     * If the name of the animal is not found, null, or empty, return "unknown".
+     *
+     * Rhino -> Crash
+     * Giraffe -> Tower
+     * Elephant -> Herd
+     * Lion -> Pride
+     * Crow -> Murder
+     * Pigeon -> Kit
+     * Flamingo -> Pat
+     * Deer -> Herd
+     * Dog -> Pack
+     * Crocodile -> Float
+     *
+     * animalGroupName("giraffe") → "Tower"
+     * animalGroupName("") -> "unknown"
+     * animalGroupName("walrus") -> "unknown"
+     * animalGroupName("Rhino") -> "Crash"
+     * animalGroupName("rhino") -> "Crash"
+     * animalGroupName("elephants") -> "unknown"
+     *
      */
-// VARIABLE STATEMENTS!!!!!!!!!!!!!!!
-    public boolean sleepIn(boolean weekday, boolean vacation) {
-        if (!weekday || vacation) {
-            return true;
+    public String animalGroupName(String animalName) {
+        Map <String, String> groups = new HashMap <String, String> ();
+        groups.put ("rhino", "Crash");
+        groups.put ("giraffe", "Tower");
+        groups.put ("elephant", "Herd");
+        groups.put ("lion", "Pride");
+        groups.put ("crow", "Murder");
+        groups.put ("pigeon", "Kit");
+        groups.put ("flamingo", "Pat");
+        groups.put ("deer", "Herd");
+        groups.put ("dog", "Pack");
+        groups.put ("crocodile", "Float");
+        if (animalName == null || groups.containsKey (animalName.toLowerCase ()) == false) {
+            return "unknown";
+        }
+        return groups.get (animalName.toLowerCase ());
+
+    }
+
+    /*
+     * Given an String item number (a.k.a. SKU), return the discount percentage if the item is on sale.
+     * If the item is not on sale, return 0.00.
+     *
+     * If the item number is empty or null, return 0.00.
+     *
+     * "KITCHEN4001" -> 0.20
+     * "GARAGE1070" -> 0.15
+     * "LIVINGROOM"	-> 0.10
+     * "KITCHEN6073" -> 0.40
+     * "BEDROOM3434" -> 0.60
+     * "BATH0073" -> 0.15
+     *
+     * The item number should be case insensitive so "kitchen4001", "Kitchen4001", and "KITCHEN4001"
+     * should all return 0.20.
+     *
+     * isItOnSale("kitchen4001") → 0.20
+     * isItOnSale("") → 0.00
+     * isItOnSale("GARAGE1070") → 0.15
+     * isItOnSale("dungeon9999") → 0.00
+     *
+     */
+    public double isItOnSale(String itemNumber) {
+        Map <String, Double> room = new HashMap <String, Double> ();
+        room.put ("KITCHEN4001", 0.20);
+        room.put ("GARAGE1070", 0.15);
+        room.put ("LIVINGROOM", 0.10);
+        room.put ("KITCHEN6073", 0.40);
+        room.put ("BEDROOM3434", 0.60);
+        room.put ("BATH0073", 0.15);
+        if (itemNumber == null || room.containsKey (itemNumber.toUpperCase ()) == false) {
+            return 0.00;
+        }
+
+        return room.get (itemNumber.toUpperCase ());
+    }
+
+    /*
+     * Modify and return the given Map as follows: if "Peter" has more than 0 money, transfer half of it to "Paul",
+     * but only if Paul has less than $10s.
+     *
+     * Note, monetary amounts are specified in cents: penny=1, nickel=5, ... $1=100, ... $10=1000, ...
+     *
+     * robPeterToPayPaul({"Peter": 2000, "Paul": 99}) → {"Peter": 1000, "Paul": 1099}
+     * robPeterToPayPaul({"Peter": 2000, "Paul": 30000}) → {"Peter": 2000, "Paul": 30000}
+     *
+     */
+    public Map <String, Integer> robPeterToPayPaul(Map <String, Integer> peterPaul) {
+        Map <String, Integer> totalMoney = new HashMap <> ();
+        if ((peterPaul.get ("Peter") > 0 && peterPaul.get ("Paul") < 1000)) {
+            int Peter = peterPaul.get ("Peter");
+            int transferAmount = Peter / 2;
+            int Paul = peterPaul.get ("Paul");
+            peterPaul.put ("Peter", Peter - transferAmount);
+            peterPaul.put ("Paul", Paul + transferAmount);
+
+//            determine how much money Peter has, 1/2, update Peter's amount and add to Paul's
+        }
+
+
+        return peterPaul;
+    }
+
+    /*
+     * Modify and return the given Map as follows: if "Peter" has $50 or more, AND "Paul" has $100 or more,
+     * then create a new "PeterPaulPartnership" worth a combined contribution of a quarter of each partner's
+     * current worth.
+     *
+     * peterPaulPartnership({"Peter": 50000, "Paul": 100000}) → {"Peter": 37500, "Paul": 75000, "PeterPaulPartnership": 37500}
+     * peterPaulPartnership({"Peter": 3333, "Paul": 1234567890}) → {"Peter": 3333, "Paul": 1234567890}
+     *
+     */
+    public Map <String, Integer> peterPaulPartnership(Map <String, Integer> peterPaul) {
+        int peterMoney = peterPaul.get ("Peter");
+        int paulMoney = peterPaul.get ("Paul");
+
+        if (peterMoney >= 5000 && paulMoney >= 10000) {
+            int peterPaulPartnershipPeter = peterMoney / 4;
+            peterMoney = peterMoney - peterPaulPartnershipPeter;
+            int peterPaulPartnershipPaul = paulMoney / 4;
+            paulMoney = paulMoney - peterPaulPartnershipPaul;
+            int total = peterPaulPartnershipPaul + peterPaulPartnershipPeter;
+            peterPaul.put ("Peter", peterMoney);
+            peterPaul.put ("Paul", paulMoney);
+            peterPaul.put ("PeterPaulPartnership", total);
+            return peterPaul;
         } else {
-            return false;
-        }
-    }
-
-	/*
-	 2. We have two monkeys, a and b, and the parameters aSmile and bSmile indicate if each is smiling.
-	 We are in trouble if they are both smiling or if neither of them is smiling. Return true if we
-	 are in trouble.
-	 monkeyTrouble(true, true) → true
-	 monkeyTrouble(false, false) → true
-	 monkeyTrouble(true, false) → false
-	 */
-
-    public boolean monkeyTrouble(boolean aSmile, boolean bSmile) {
-        if (aSmile && bSmile || !aSmile && !bSmile) {
-            return true;
-        } else {
-            return false;
+            return peterPaul;
         }
     }
 
     /*
-     3. Given two int values, return their sum. Unless the two values are the same, then return double their sum.
-     sumDouble(1, 2) → 3
-     sumDouble(3, 2) → 5
-     sumDouble(2, 2) → 8
+     * Given an array of non-empty Strings, return a Map<String, String> where for every different String in the array,
+     * there is a key of its first character with the value of its last character.
+     *
+     * beginningAndEnding(["code", "bug"]) → {"b": "g", "c": "e"}
+     * beginningAndEnding(["man", "moon", "main"]) → {"m": "n"}
+     * beginningAndEnding(["muddy", "good", "moat", "good", "night"]) → {"g": "d", "m": "t", "n": "t"}
      */
-    public int sumDouble(int a, int b) {
-        if (a == b) {
-            return 2 * (a + b);
-        } else {
-            return (a + b);
+    public Map <String, String> beginningAndEnding(String[] words) {
+        Map <String, String> map = new HashMap ();
+        for (String str : words) {
+            map.put (str.charAt (0) + "", str.charAt (str.length () - 1) + "");
         }
-    }
-
-    /*
-     4. Given an int n, return the absolute difference between n and 21, except return double the absolute
-     difference if n is over 21.
-     diff21(19) → 2
-     diff21(10) → 11
-     diff21(21) → 0
-     diff21(22) → 2
-     diff21(-10) → 31
-     */
-    public int diff21(int n) {
-        if (n > 21) {
-            return 2 * (21 - n);
-        } else {
-            return (n + 21) ^ (n - 21);
-        }
-    }
-
-    /*
-     5. We have a loud talking parrot. The "hour" parameter is the current hour time in the range 0..23.
-     We are in trouble if the parrot is talking and the hour is before 7 or after 20. Return true if
-     we are in trouble.
-     parrotTrouble(true, 6) → true
-     parrotTrouble(true, 7) → false
-     parrotTrouble(false, 6) → false
-     */
-    public boolean parrotTrouble(boolean talking, int hour) {
-        if (talking && (hour < 7 || hour > 20)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-	/*
-	 6. Given 2 ints, a and b, return true if one if them is 10 or if their sum is 10.
-	 makes10(9, 10) → true
-	 makes10(9, 9) → false
-	 makes10(1, 9) → true
-	 */
-
-    public boolean makes10(int a, int b) {
-
-        if ((a == 10 || b == 10) || (a + b == 10)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-		/*
-		 7. Given 2 int values, return true if one is negative and one is positive. Except if the parameter
-		 "negative" is true, then return true only if both are negative.
-		 posNeg(1, -1, false) → true
-		 posNeg(-1, 1, false) → true
-		 posNeg(-4, -5, true) → true
-		*/
-
-    public boolean posNeg(int a, int b, boolean negative) {
-        if (((a > 0) && (b < 0)) || ((a < 0) && (b > 0))) {
-            return true;
-        } else if ((negative == true) && ((a < 0) && (b < 0))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /*
-     8. Return true if the given non-negative number is a multiple of 3 or a multiple of 5.
-     (Hint: Think "mod".)
-     or35(3) → true
-     or35(10) → true
-     or35(8) → false
-     */
-    public boolean or35(int n) {
-
-        if ((n % 3 <= 2) || (n % 3 >= 4) && (n % 5 <= 4) || (n % 5 >= 6)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    /*
-     9. Given two temperatures, return true if one is less than 0 and the other is greater than 100.
-     icyHot(120, -1) → true
-     icyHot(-1, 120) → true
-     icyHot(2, 120) → false
-     */
-    public boolean icyHot(int temp1, int temp2) {
-        if ((temp1 < 0 && temp2 > 100) || (temp2 < 0 && temp1 > 100)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /*
-     10. Given 2 int values, return true if either of them is in the range 10..20 inclusive.
-     in1020(12, 99) → true
-     in1020(21, 12) → true
-     in1020(8, 99) → false
-     */
-    public boolean in1020(int a, int b) {
-        if ((a >= 10 && a <= 20) || (b >= 10 && b <= 20)) ;
-        return true;
-    }
-
-    /*
-     11. We'll say that a number is "teen" if it is in the range 13..19 inclusive. Given 3 int values,
-     return true if 1 or more of them are teen.
-     hasTeen(13, 20, 10) → true
-     hasTeen(20, 19, 10) → true
-     hasTeen(20, 10, 13) → true
-     */
-    public boolean hasTeen(int a, int b, int c) {
-        if (((a >= 13 && a <= 19) || (b >= 13 && b <= 19) || (c >= 13 && c <= 19))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /*
-     12. We'll say that a number is "teen" if it is in the range 13..19 inclusive. Given 2 int values,
-     return true if one or the other is teen, but not both.
-     loneTeen(13, 99) → true
-     loneTeen(21, 19) → true
-     loneTeen(13, 13) → false
-     */
-    public boolean loneTeen(int a, int b) {
-        if ((a >= 13 && a <= 19) ^ (b >= 13 && b <= 19)) ;
-        return true;
-    }
-
-    /*
-     13. Given three int values, a b c, return the largest.
-     intMax(1, 2, 3) → 3
-     intMax(1, 3, 2) → 3
-     intMax(3, 2, 1) → 3
-     */
-    public int intMax(int a, int b, int c) {
-        if (a > b || a > c) {
-            return a;
-        }
-        if (b > a || b > c) {
-            return b;
-        } else {
-            return c;
-        }
-    }
-
-
-	/*
-	 14. Given 2 int values, return true if they are both in the range 30..40 inclusive, or they are both
-	 in the range 40..50 inclusive.
-	 in3050(30, 31) → true
-	 in3050(30, 41) → false
-	 in3050(40, 50) → true
-	 */
-
-    public boolean in3050(int a, int b) {
-        if ((a >= 30 && a <= 40) && (b >= 30 && b <= 40) || (a >= 40 && a <= 50) && (b >= 40 && b <= 50)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /*
-     15. Given 2 int values, return the larger value that is in the range 10..20 inclusive,
-     or return 0 if neither is in that range.
-     max1020(11, 19) → 19
-     max1020(19, 11) → 19
-     max1020(11, 9) → 11
-     */
-    public int max1020(int a, int b) {
-        if ((a > b) && (a >= 10 && a <= 20)) {
-            return a;
-        } else if ((b > a && b >= 10 && b <= 20)) {
-            return b;
-        } else {
-            return 0;
-        }
-    }
-
-	/*
-	 16. When squirrels get together for a party, they like to have cigars. A squirrel party is successful
-	 when the number of cigars is between 40 and 60, inclusive. Unless it is the weekend, in which case
-	 there is no upper bound on the number of cigars. Return true if the party with the given values is
-	 successful, or false otherwise.
-	 cigarParty(30, false) → false
-	 cigarParty(50, false) → true
-	 cigarParty(70, true) → true
-	 */
-
-    public boolean cigarParty(int cigars, boolean isWeekend) {
-        if (isWeekend == true && cigars >= 40)
-            return true;
-        if (!(isWeekend) && cigars >= 40 && cigars <= 60)
-            return true;
-        else
-            return false;
-    }
-
-    /*
-     17. You and your date are trying to get a table at a restaurant. The parameter "you" is the stylishness
-     of your clothes, in the range 0..10, and "date" is the stylishness of your date's clothes. The result
-     returned will be 0 if you did not get the table, 1 if you might get the table, and 2 if you did get
-     the table. If you or your date is very stylish (8 or more), then the result is 2 (yes). With the
-     exception that if either of you has style of 2 or less, then the result is 0 (no). Otherwise the
-     result is 1 (maybe).
-     dateFashion(5, 10) → 2
-     dateFashion(5, 2) → 0
-     dateFashion(5, 5) → 1
-     */
-    public int dateFashion(int you, int date) {
-        if ((you >= 8 && date > 2) || (date >= 8 && you > 2))
-            return 2;
-        if (you <= 2 || date <= 2)
-            return 0;
-        else
-            return 1;
+        return map;
     }
 
 
     /*
-     18. The squirrels in Palo Alto spend most of the day playing. In particular, they play if the temperature
-     is between 60 and 90 (inclusive). Unless it is summer, then the upper limit is 100 instead of 90. Given
-     an int temperature and a boolean isSummer, return true if the squirrels play and false otherwise.
-     squirrelPlay(70, false) → true
-     squirrelPlay(95, false) → false
-     squirrelPlay(95, true) → true
+     * Given an array of Strings, return a Map<String, Integer> with a key for each different String, with the value the
+     * number of times that String appears in the array.
+     *
+     * ** A CLASSIC **
+     *
+     * wordCount(["ba", "ba", "black", "sheep"]) → {"ba" : 2, "black": 1, "sheep": 1 }
+     * wordCount(["a", "b", "a", "c", "b"]) → {"b": 2, "c": 1, "a": 2}
+     * wordCount([]) → {}
+     * wordCount(["c", "b", "a"]) → {"b": 1, "c": 1, "a": 1}
+     *
      */
-    public boolean squirrelPlay(int temp, boolean isSummer) {
-        if (isSummer && temp <= 100 && temp >= 60)
-            return true;
-        if (!(isSummer) && temp <= 90 && temp >= 60)
-            return true;
-        else
-            return false;
+    public Map <String, Integer> wordCount(String[] words) {
+        Map <String, Integer> map = new HashMap ();
+        for (String s : words) {
+            String tmp = s;
+            if (map.containsKey (tmp)) {
+                int count = map.get (tmp);
+                map.put (tmp, count + 1);
+            } else
+                map.put (tmp, 1);
+        }
+        return map;
     }
 
-
     /*
-     19. Dessert Island Diner believes a meal isn't a meal without dessert. All meals come with
-     a free dessert.
-
-     There are three categories of free desserts: "standard", "special", and "ginormous".
-     The meal amount determines the dessert category: <= $10 (standard), <= $15 (special),
-     > $15 (ginormous). Unless it is your birthday -- on that day, an additional $5 is added
-     when calculating the category to potentially bump you up to the next delicious category.
-
-     For instance, if the amount of the meal was $7, and it is your birthday, $5 is added to
-     $7 when determining the dessert category, which means you would qualify for a "special".
-
-     yourCakeAndEatItToo(4.99, false) → "standard"
-     yourCakeAndEatItToo(4.99, true) → "standard"
-     yourCakeAndEatItToo(7.00, false) → "standard"
-     yourCakeAndEatItToo(7.00, true) → "special"
-     yourCakeAndEatItToo(10.00, false) → "standard"
-     yourCakeAndEatItToo(10.00, true) → "special"
-     yourCakeAndEatItToo(11.00, false) → "special"
+     * Given an array of int values, return a Map<Integer, Integer> with a key for each int, with the value the
+     * number of times that int appears in the array.
+     *
+     * ** The lesser known cousin of the the classic wordCount **
+     *
+     * intCount([1, 99, 63, 1, 55, 77, 63, 99, 63, 44]) → {1: 2, 44: 1, 55: 1, 63: 3, 77: 1, 99:2}
+     * intCount([107, 33, 107, 33, 33, 33, 106, 107]) → {33: 4, 106: 1, 107: 3}
+     * intCount([]) → {}
+     *
      */
-    public String yourCakeAndEatItToo(double mealAmount, boolean isBirthday) {
-        if (isBirthday == true && mealAmount <= 5)
-            return "standard";
-         else
-            isBirthday && mealAmount > 5 && mealAmount <= 10;
-            return "special";
-        else
-            isBirthday == true && mealAmount >= 10;
-            return "ginormous";
-        }
+    public Map <Integer, Integer> integerCount(int[] ints) {
 
-    /*
-     20. Given 2 ints, a and b, return their sum. However, sums in the range 10..19 inclusive, are forbidden,
-     so in that case just return 20.
-     sortaSum(3, 4) → 7
-     sortaSum(9, 4) → 20
-     sortaSum(10, 11) → 21
-     */
-        public int sortaSum ( int a, int b){
-            int sum = a + b;
-            if (sum >= 10 && sum <= 19)
-                return 20;
-            return sum;
-        }
+        Map<Integer, Integer> counts = new HashMap<>();
 
-    /*
-     21. Given a day of the week encoded as 0=Sun, 1=Mon, 2=Tue, ...6=Sat, and a boolean indicating if we are
-     on vacation, return a string of the form "7:00" indicating when the alarm clock should ring. Weekdays,
-     the alarm should be "7:00" and on the weekend it should be "10:00". Unless we are on vacation -- then
-     on weekdays it should be "10:00" and weekends it should be "off".
-     alarmClock(1, false) → "7:00"
-     alarmClock(5, false) → "7:00"
-     alarmClock(0, false) → "10:00"
-     */
-        public String alarmClock ( int day, boolean vacation){
-            if (vacation) {
-                if (day == 0 || day == 6)
-                    return "off";
-                return "10:00";
+        for (int integerCheck : ints) {
+            if(counts.containsKey(integerCheck)) {
+                int currentCount = counts.get(integerCheck);
+                currentCount++;
+                counts.put(integerCheck, currentCount) ;
             } else {
-                if (day == 0 || day == 6)
-                    return "10:00";
-                return "7:00";
+                counts.put(integerCheck, 1);
             }
         }
+        return counts;
     }
 
     /*
-     22. Given a number n, return true if n is in the range 1..10, inclusive. Unless "outsideMode" is true,
-     in which case return true if the number is less or equal to 1, or greater or equal to 10.
-     in1To10(5, false) → true
-     in1To10(11, false) → false
-     in1To10(11, true) → true
+     * Given an array of Strings, return a Map<String, Boolean> where each different String is a key and value
+     * is true only if that String appears 2 or more times in the array.
+     *
+     * wordMultiple(["a", "b", "a", "c", "b"]) → {"b": true, "c": false, "a": true}
+     * wordMultiple(["c", "b", "a"]) → {"b": false, "c": false, "a": false}
+     * wordMultiple(["c", "c", "c", "c"]) → {"c": true}
+     *
      */
-    public boolean in1To10(int n, boolean outsideMode) {
-        if (outsideMode)
-            return (n <= 1 || n >= 10);
-        return (n >= 1 && n <= 10);
+    public Map <String, Boolean> wordMultiple(String[] words) {
+        Map<String, Boolean> wordMultiple = new HashMap<>();
+        Map<String, Integer> trueTwoOrMore = new HashMap<>();
 
-    }
+        for  (String multipleTimes : words ) {
 
-    /*
-     23. We'll say a number is special if it is a multiple of 11 or if it is one more than a multiple of 11.
-     Return true if the given non-negative number is special.
-     (Hint: Think "mod".)
-     specialEleven(22) → true
-     specialEleven(23) → true
-     specialEleven(24) → false
-     */
-    public boolean specialEleven(int n) {
-        int num = 0;
-        return (num % 10 <= 2 || num % 10 >= 8);
-
-    }
-
-    /*
-     24. Return true if the given non-negative number is 1 or 2 more than a multiple of 20.
-     (Hint: Think "mod".)
-     more20(20) → false
-     more20(21) → true
-     more20(22) → true
-     */
-    public boolean more20(int n) {
-        if (n % 20 + 1) || ((n % 20) + 2);
-        return true;
-    }
-
-    /*
-     25. Return true if the given non-negative number is a multiple of 3 or 5, but not both.
-     (Hint: Think "mod".)
-     old35(3) → true
-     old35(10) → true
-     old35(15) → false
-     */
-    public boolean old35(int n) {
-        if ((n % <= 5) ^ (n % >= 2) && (n % >= 5)) {
-            ;
-        } else if (n % 3 <= 2) {
-            ;
+            if(trueTwoOrMore.containsKey(multipleTimes)) {
+                int currentCount = trueTwoOrMore.get(multipleTimes);
+                currentCount++;
+                if (currentCount > 1){
+                    wordMultiple.put(multipleTimes, true);
+                }else{ wordMultiple.put(multipleTimes, false);
+                }
+            } else {
+                trueTwoOrMore.put(multipleTimes, 1);
+                wordMultiple.put(multipleTimes, false);
+            }
         }
-        return true;
+        return wordMultiple;
     }
 
-    /*
-     26. Return true if the given non-negative number is 1 or 2 less than a multiple of 20. So for example 38
-     and 39 return true, but 40 returns false.
-     (Hint: Think "mod".)
-     less20(18) → true
-     less20(19) → true
-     less20(20) → false
-     */
-    public boolean less20(int n) {
-        if ((n % 20 - 1) || (n % 20 - 2)) ;
 
-    }
+/*
+ * Given two Maps, Map<String, Integer>, merge the two into a new Map, Map<String, Integer> where keys in Map2,
+ * and their int values, are added to the int values of matching keys in Map1. Return the new Map.
+ *
+ * Unmatched keys and their int values in Map2 are simply added to Map1.
+ *
+ * consolidateInventory({"SKU1": 100, "SKU2": 53, "SKU3": 44} {"SKU2":11, "SKU4": 5})
+ * 	 → {"SKU1": 100, "SKU2": 64, "SKU3": 44, "SKU4": 5}
+ *
+ */
+public Map<String, Integer> consolidateInventory(Map<String, Integer> mainWarehouse,
+        Map<String, Integer> remoteWarehouse){
 
-    /*
-     27. Given a non-negative number "num", return true if num is within 2 of a multiple of 10. Note: (a % b)
-     is the remainder of dividing a by b, so (7 % 5) is 2.
-     nearTen(12) → true
-     nearTen(17) → false
-     nearTen(19) → true
-     */
-    public boolean nearTen(int num) {
-        boolean result = false;
-        int remainder = num % 10;
-        if (remainder <= 2 || remainder >= 8) {
-            result = true;
+    Map<String, Integer> newMap = new HashMap<>();
+
+    for (String name : mainWarehouse.keySet()){
+        if(remoteWarehouse.containsKey(name)){
+            newMap.put(name, (mainWarehouse.get(name) + remoteWarehouse.get(name)));
+        } else {
+            newMap.put(name, mainWarehouse.get(name));
         }
-        return result;
     }
-
-    /*
-     28. Given 2 ints, a and b, return their sum. However, "teen" values in the range 13..19 inclusive, are
-     extra lucky. So if either value is a teen, just return 19.
-     teenSum(3, 4) → 7
-     teenSum(10, 13) → 19
-     teenSum(13, 2) → 19
-     */
-    public int teenSum(int a, int b) {
-        if (a >= 13 && a <= 19 || b >= 13 && b <= 19)
-            return 19;
-        return (a + b);
-    }
-
-    /*
-     29. Your cell phone rings. Return true if you should answer it. Normally you answer, except in the morning
-     you only answer if it is your mom calling. In all cases, if you are asleep, you do not answer.
-     answerCell(false, false, false) → true
-     answerCell(false, false, true) → false
-     answerCell(true, false, false) → false
-     */
-    public boolean answerCell(boolean isMorning, boolean isMom, boolean isAsleep) {
-        if (isAsleep)
-            return false;
-        if (isMom)
-            return true;
-        return (!isMorning);
-
-    }
-
-    /*
-     30. We are having a party with amounts of tea and candy. Return the int outcome of the party encoded as
-     0=bad, 1=good, or 2=great. A party is good (1) if both tea and candy are at least 5. However, if
-     either tea or candy is at least double the amount of the other one, the party is great (2). However,
-     in all cases, if either tea or candy is less than 5, the party is always bad (0).
-     teaParty(6, 8) → 1
-     teaParty(3, 8) → 0
-     teaParty(20, 6) → 2
-     */
-    public int teaParty(int tea, int candy) {
-        if (tea < 5 || candy < 5)
-            return 0;
-        if (candy >= tea * 2 || tea >= candy * 2)
-            return 2;
-        return 1;
-    }
-
-    /*
-     31. Given three ints, a b c, return true if it is possible to add two of the ints to get the third.
-     twoAsOne(1, 2, 3) → true
-     twoAsOne(3, 1, 2) → true
-     twoAsOne(3, 2, 2) → false
-     */
-    public boolean twoAsOne(int a, int b, int c) {
-        if (((a + b == c) || (a + c == b) || (b + c == a))) {
-            return true;
+    for (String name : remoteWarehouse.keySet()) {
+        if (!(mainWarehouse.containsKey(name))) {
+            newMap.put(name, remoteWarehouse.get(name));
         }
-        return false;
     }
-
-    /*
-     32. Given three ints, a b c, return true if b is greater than a, and c is greater than b. However, with
-     the exception that if "bOk" is true, b does not need to be greater than a.
-     inOrder(1, 2, 4, false) → true
-     inOrder(1, 2, 1, false) → false
-     inOrder(1, 1, 2, true) → true
-     */
-    public boolean inOrder(int a, int b, int c, boolean bOk) {
-        if (bOk)
-            return (c > b);
-        return (b > a && c > b);
-
-    }
-
-    /*
-     33. Given three ints, a b c, return true if they are in strict increasing order, such as 2 5 11,
-     or 5 6 7, but not 6 5 7 or 5 5 7. However, with the exception that if "equalOk" is true, equality
-     is allowed, such as 5 5 7 or 5 5 5.
-     inOrderEqual(2, 5, 11, false) → true
-     inOrderEqual(5, 7, 6, false) → false
-     inOrderEqual(5, 5, 7, true) → true
-     */
-    public boolean inOrderEqual(int a, int b, int c, boolean equalOk) {
-
-        if (equalOk)
-            return (a <= b && b <= c);
-            return (a < b && b < c);
-        }
-
-
-    /*
-     34. Given 3 int values, a b c, return their sum. However, if one of the values is the same as another
-     of the values, it does not count towards the sum.
-     loneSum(1, 2, 3) → 6
-     loneSum(3, 2, 3) → 2
-     loneSum(3, 3, 3) → 0
-     */
-    public int loneSum(int a, int b, int c) {
-		if (a !== b) && (b !== c) && (a !== c);
-		return loneSum;
-	} else if {
-		((( a == b ) || ( b == c ) || (a == c)));
-			return (((a + b) || (b + c) || (a + c)));
-        return 0;
-    }
-
-    /*
-     35. Given 3 int values, a b c, return their sum. However, if one of the values is 13 then it does not
-     count towards the sum and values to its immediate right do not count. So for example, if b is 13, then both
-     b and c do not count.
-     luckySum(1, 2, 3) → 6
-     luckySum(1, 2, 13) → 3
-     luckySum(1, 13, 3) → 1
-     luckySum(13, 1, 3) → 3
-     luckySum(13, 13, 3) → 0
-     */
-    public int luckySum(int a, int b, int c) {
-		if luckySum((a == 13) {
-		return 0;
-	} else if {
-		(b == 13);
-		return int(a);
-	} else if {(c == 13);
-        return (a + b);
-    }
+    return newMap;
 }
+
+/*
+ * Just when you thought it was safe to get back in the water --- last2Revisited!!!!
+ *
+ * Given an array of Strings, for each String, the count of the number of times that a subString length 2 appears
+ * in the String and also as the last 2 chars of the String, so "hixxxhi" yields 1.
+ *
+ * We don't count the end subString, but the subString may overlap a prior position by one.  For instance, "xxxx"
+ * has a count of 2, one pair at position 0, and the second at position 1. The third pair at position 2 is the
+ * end subString, which we don't count.
+ *
+ * Return Map<String, Integer>, where the key is String from the array, and its last2 count.
+ *
+ * last2Revisited(["hixxhi", "xaxxaxaxx", "axxxaaxx"]) → {"hixxhi": 1, "xaxxaxaxx": 1, "axxxaaxx": 2}
+ *
+ */
+public Map<String, Integer> last2Revisited(String[]words){
+
+    Map<String, Integer> keyAndCount = new HashMap<>();
+
+
+    for (String key : words) {
+        if (words.length <= 2) {
+            keyAndCount.put(key, 0);
+            keyAndCount.put(key + 1, 0);
+        }
+    }
+
+    return null;
+
+
+    }
+
+            }
