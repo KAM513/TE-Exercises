@@ -3,6 +3,7 @@ package com.techelevator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class SafeReflection {
 
@@ -27,13 +28,29 @@ public class SafeReflection {
      * of the requested method name, or null.
      *
      * @param klass
-     * @param methodName
+     * @param fieldName
      * @return
      */
     public static Field getField(Class<?> klass, String fieldName) {
         try {
             return klass.getField(fieldName);
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * getField wraps Reflection's getField method so that it either returns any method
+     * of the requested method name, or null.
+     *
+     * @param klass
+     * @param fieldName
+     * @return
+     */
+    public static Field getDeclaredField(Class<?> klass, String fieldName) {
+        try {
+            return klass.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
             return null;
         }
     }
@@ -63,4 +80,51 @@ public class SafeReflection {
         }
     }
 
+
+    /**
+     * Convenience method to check if field has a setter.
+     *
+     * @param klass
+     * @param field
+     * @return true if field has setter.
+     */
+    public static boolean hasSetter(Class<?> klass, String field) {
+        Method[] methods = klass.getMethods();
+        for (Method method : methods) {
+            if(method.getName().equals("set" + field)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Convenience method to check if field has a getter.
+     *
+     * @param klass
+     * @param field
+     * @return true if field has setter.
+     */
+    public static boolean hasGetter(Class<?> klass, String field) {
+        Method[] methods = klass.getMethods();
+        for (Method method : methods) {
+            if(method.getName().equals("get" + field)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static <T> boolean implementsInterface(T klass, String theInterface) {
+        boolean implementsInterface = false;
+        Type[] interfaces = klass.getClass().getGenericInterfaces();
+        for (Type i : interfaces) {
+            if( i.getTypeName().equals(theInterface) ) {
+                implementsInterface = true;
+                break;
+            }
+        }
+        return implementsInterface;
+    }
 }

@@ -1,239 +1,120 @@
-# Encapsulation
+# Polymorphism
 
-In this exercise, you'll create the classes specified in the [Exercises](#Exercises) section of this document. The unit tests you run verify that you defined the classes correctly.
+The purpose of this exercise is to practice writing code that uses the Object-Oriented Programming principle of polymorphism.
 
 ## Learning objectives
 
-After completing this exercise, you'll understand how to:
+After completing this exercise, students will be able to:
 
-* Write code that's [loosely coupled][loose-coupling].
-* Write code that appropriately hides the internal details of classes.
-* Limit access to properties through the use of [access modifiers][java-access-modifiers].
-* Write [derived properties][derived-properties].
+- Explain the concept of polymorphism and how it's useful
+- Demonstrate an understanding of where inheritance can assist in writing polymorphic code
+- State the purpose of interfaces and how they're used
+- Use polymorphism through inheritance using IS-A relationships
+- Use polymorphism through interfaces using CAN-DO relationships
+- Give examples of interfaces from the Java/C# standard library (Collections)
 
 ## Evaluation criteria and functional requirements
 
 * The project must not have any build errors.
-* All unit tests pass as expected.
-* Appropriate variable names and data types are used.
 * Code is presented in a clean, organized format.
 * Code is appropriately encapsulated.
+* Polymorphism is used appropriately to avoid code duplication.
 * The code meets the specifications defined below.
 
-## Getting started
+### Bank customer application
 
-1. [Import](https://book.techelevator.com/v2_3/content/guides/intellij.html#import-a-project) the encapsulation exercises project into IntelliJ.
-2. [Run all tests](https://book.techelevator.com/v2_3/content/guides/intellij.html#running-tests) to see the results of your tests and which ones passed or failed.
-3. Provide enough code until the test passes.
-4. Repeat until all tests are passing.
+**Notes for all classes and interfaces**
+- X in the set column indicates it **must have a Setter**.
+- Nothing in the set column indicates the attribute is derived.
+- Readonly attributes don't require a Setter.
 
-## Tips and tricks
+#### Instructions
 
-### Focus on one test at a time
+This code is from the Inheritance day. The bank account classes work well, but now the bank needs to calculate a customer's total assets to assign them VIP status if they have over $25,000 in assets at the bank.
 
-As you work on creating the classes, be sure to run the tests, and then provide enough code to pass the test. For instance, if you're working on the `HomeworkAssignment` class, provide enough code to get one of the `HomeworkAssignment` tests passing.
+The bank is also introducing credit cards. Since credit cards aren't strictly bank accounts where money is stored, they don't inherit from the `BankAccount` class. However, they must still be accounted for in the VIP calculation.
 
-Focusing on getting a single test to pass at a time saves time, as this forces you to only focus on what's important for the test you're currently working on. This is commonly called **[Test Driven Development][introduction-to-test-driven-development]**, or **TDD**.
+For this exercise, you'll add new features to the code to create a `Customer` class that has multiple accounts. You'll also create a new type of account: a credit card account. A credit card account isn't a `BankAccount`, but it needs to be stored with the customer as one of their accounts. To do this, you need to create a new interface that specifies that an object is `Accountable` and has a `getBalance()` method.
 
-### Be mindful of your access modifiers
+![class diagram](account&#32;class&#32;diagram.jpg)
 
-Remember that [access modifiers][java-access-modifiers] are a key feature of encapsulation.
+For this exercise, you will:
 
-### Write loosely coupled code
+1. Add a new method to allow customers to transfer money between `BankAccount`s.
+2. Create a new interface called `Accountable`.
+3. Make `BankAccount` implement `Accountable`.
+4. Create a new class called `CreditCardAccount` that's also `Accountable`.
+5. Create a `Customer` class that has many `Accountable` objects.
+6. Add an `isVip()` method to `Customer`.
 
-Keep in mind that a **loosely coupled** system is one in which each of its components has, or makes use of, little or no knowledge of the definitions of other separate components. One of your goals as a developer should be to write code that's loosely coupled.
+#### Step One: Add a new `transferTo()` method to transfer money between `BankAccount`s
 
-### Don't linger too long on one problem
+Add the following method to allow `BankAccount`s to transfer money to another `BankAccount`. Where would you add this method to make sure it works for all `BankAccount`s, including `SavingsAccount` and `CheckingAccount`?
 
-If you find yourself stuck on a problem more than fifteen minutes, move on to the next, and try again later. You may figure out the solution after working through another problem or two.
+| Method Name| Return Type | Description |
+| ---------- | ----------- | ----------- |
+| `transferTo(BankAccount destinationAccount, int transferAmount)` | `int` | Withdraws `transferAmount` from this account and deposits it into `destinationAccount`.|
 
-## Notes for all classes
+New unit tests have been added for this section. This section is complete when the `CheckingAccountTest`, `SavingsAccountTest`, and `BankAccountTest` unit tests all pass.
 
-- An X in the set column indicates the property must have a `set`.
+>Note: Initially, the unit tests may show `transferTo()` as a ***missing method error*** rather than a failing test until you add the method. Once added, the `transferTo()` method may still fail. It won't be because it's missing.
 
-## Exercises
+#### Step Two: Create the `Accountable` interface
 
-### Step One: Implement the `HomeworkAssignment` class
+The `Accountable` interface means that an object can be used in the accounting process for the customer.
 
-#### Instance variables
+| Method Name | Return Type | Description|
+| -------------- | ------------ | ---------------------------------------------------- |
+| `getBalance()`        | `int`      | Returns the balance value of the account in dollars. |
 
-| Attribute               | Data Type | Get | Set | Description                                                             |
-| ----------------------- | --------- | --- | --- | ----------------------------------------------------------------------- |
-| earnedMarks             | int       | X   | X   | The total number of correct marks submitter received on the assignment. |
-| possibleMarks           | int       | X   |     | The number of possible marks on the assignment.                         |
-| submitterName           | string    | X   |     | The submitter's name for the assignment.                                |
-| letterGrade _(derived)_ | string    | X   |     | The letter grade for the assignment.                                    |
+#### Step Three: Make `BankAccount` accountable
 
-**Notes**
+Add the `Accountable` interface to `BankAccount`, making `BankAccount` and all the classes that inherit from `BankAccount` accountable classes.
 
- - `letterGrade` is a derived attribute that's calculated using `earnedMarks` and `possibleMarks`:
-   - For 90% or greater, it returns "A"
-   - For 80-89%, it returns "B"
-   - For 70-79%, it returns "C"
-   - For 60-69%, it returns "D"
-   - Otherwise, it returns "F"
-   - _hint_: `possibleMarks` and `earnedMarks` are `int`s. What happens when a smaller integer is divided by a larger integer?
+#### Step Four: Implement a new `CreditCardAccount` class
 
-#### Constructor
+A `CreditCardAccount` isn't a `BankAccount` but "can-do" `Accountable`.
 
-The `HomeworkAssignment` class has a single constructor. It accepts two arguments: `int possibleMarks` and `String submitterName`. Use these parameters to set the instance variables of the class.
+| Constructor                                                       | Description                                                                                                                             |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `CreditCardAccount(String accountHolder, String accountNumber)` | A new credit card account requires an account holder name and account number. The debt defaults to a 0 dollar balance. |
 
-### Step Two: Implement the `FruitTree` class
+| Attribute Name    | Data Type | Get | Set | Description                                                  |
+| ----------------- | --------- | --- | --- | ------------------------------------------------------------ |
+| `accountHolder`     | `String`    | X   |     | Returns the account holder name that the account belongs to. |
+| `accountNumber`     | `String`    | X   |     | Returns the account number that the account belongs to.      |
+| `debt`              | `int`      | X   |     | Returns the amount the customer owes.                        |
 
-#### Instance variables
+| Method Name                | Return Type | Description                                                                       |
+| -------------------------- | ----------- | --------------------------------------------------------------------------------- |
+| `pay(int amountToPay)`       | `int`         | Removes `amountToPay` from the amount owed and returns the new total amount owed. |
+| `charge(int amountToCharge)` | `int`         | Adds `amountToCharge` to the amount owed, and returns the new total amount owed.  |
 
-| Attribute         | Data Type | Get | Set | Description                                       |
-| ----------------- | --------- | --- | --- | ------------------------------------------------- |
-| typeOfFruit       | string    | X   |     | The type of fruit on the tree.                    |
-| piecesOfFruitLeft | int       | X   |     | The number of remaining fruit pieces on the tree. |
+Note: Be sure to implement the interface. The balance for the accounting should be the debt as a negative number.
 
-#### Constructor
+Once the `CreditCardAccountTest` unit tests pass, this step is complete.
 
-Create a constructor for this class that accepts two parameters: `String typeOfFruit` and `int startingPiecesOfFruit`. Use these parameters to set the instance variables of the class.
+#### Step Five: Implement a `BankCustomer`
 
-#### Methods
+Implement the `BankCustomer` class. A bank customer "has-a" list of `Accountable`s.
 
-Create a method called `pickFruit` that accepts an `int` called `numberOfPiecesToRemove` and returns a `boolean`.
- - If there are enough pieces left on the tree, it "picks" the fruit and updates `piecesOfFruitLeft` by subtracting `numberOfPiecesToRemove` from it.
- - The method returns `true` if there were enough pieces left to pick. It returns `false` if no fruit was picked—that is, `piecesOfFruitLeft` was less than `numberOfPiecesToRemove`.
+| Attribute Name | Data Type     | Get | Set | Description                                                  |
+| -------------- | ------------- | --- | --- | ------------------------------------------------------------ |
+| `name`           | `String`        | X   | X   | Returns the account holder name that the account belongs to. |
+| `address`        | `String`        | X   | X   | Returns the address of the customer.      |
+| `phoneNumber`    | `String`        | X   | X   | Returns the phone number of the customer.      |
+| `accounts`       | `List<Accountable>` | X   |     | Returns the customer's list of Accountables as an array.     |
 
-### Step Three: Implement the `Employee` class
+| Method Name                        | Return Type | Description                                         |
+| ---------------------------------- | ----------- | --------------------------------------------------- |
+| `addAccount(Accountable newAccount)` | `void`       | Adds `newAccount` to the customer's list of accounts. |
 
-#### Instance variables
+Note: Even though the accounts getter returns an array, you don't have to store the accounts in the `BankCustomer` as an array. Since you need to add accounts whenever the `addAccount()` method is called, you'll want to use a different data structure in the class to store the accounts that's like an array, but can be added to at any time.
 
-| Attribute            | Data Type | Get | Set | Description                   |
-| -------------------- | --------- | --- | --- | ----------------------------- |
-| employeeId           | int       | X   |     | The employee ID.              |
-| firstName            | string    | X   |     | The employee's first name.    |
-| lastName             | string    | X   | X   | The employee's last name.     |
-| fullName _(derived)_ | string    | X   |     | The employee's full name.     |
-| department           | string    | X   | X   | The employee's department.    |
-| annualSalary         | double    | X   |     | The employee's annual salary. |
+#### Step Six: Add the `isVip()` method to `BankCustomer`
 
-**Notes**
+Customers whose combined account balances (credits minus debts) are at least $25,000 are considered VIP customers and receive special privileges.
 
-- `fullName` is a derived attribute that returns `lastName, firstName`.
+Add a method called `isVip` to the `BankCustomer` class that returns true if the sum of all accounts belonging to the customer is at least $25,000 and false otherwise.
 
-#### Constructor
-
-Create a constructor for this class that accepts four parameters: `int employeeId`, `String firstName`, `String lastName`, and `double salary`. Use these parameters to set the instance variables of the class.
-
-#### Methods
-
-Create a method called `raiseSalary` that accepts a `double` called `percent` and returns `void`. The method increases the current annual salary by the percentage provided. For example, 5.5 represents 5.5%.
-
-### Step Four: Implement the `Airplane` class
-
-#### Instance variables
-
-| Attribute                            | Data Type | Get | Set | Description                                     |
-| ------------------------------------ | --------- | --- | --- | ----------------------------------------------- |
-| planeNumber                          | string    | X   |     | The six-character plane number.                 |
-| totalFirstClassSeats                 | int       | X   |     | The total number of first class seats.          |
-| bookedFirstClassSeats                | int       | X   |     | The number of already booked first class seats. |
-| availableFirstClassSeats _(derived)_ | int       | X   |     | The number of available first class seats.      |
-| totalCoachSeats                      | int       | X   |     | The total number of coach seats.                |
-| bookedCoachSeats                     | int       | X   |     | The number of already booked coach seats.       |
-| availableCoachSeats _(derived)_      | int       | X   |     | The number of available coach seats.            |
-
-**Notes**
-
-- `availableFirstClassSeats` is a derived value calculated by subtracting `bookedFirstClassSeats` from `totalFirstClassSeats`
-- `availableCoachSeats` is a derived value calculated by subtracting `bookedCoachSeats` from `totalCoachSeats`
-
-#### Constructors
-
-Create a constructor for this class that accepts three parameters: `String planeNumber`, `int totalFirstClassSeats`, and `int totalCoachSeats`. Use these parameters to set the properties of the class:
-
-- `planeNumber` is the plane number assigned to the airplane.
-- `totalFirstClassSeats` is the initial number of total first class seats.
-- `totalCoachSeats` is the initial number of total coach seats.
-
-#### Methods
-
-Create a method called `reserveSeats` that returns a `boolean` and accepts two parameters: a `boolean` called `forFirstClass` and an `int` called `totalNumberOfSeats`.
-
-
-- If `forFirstClass` is `true`, add `totalNumberOfSeats` to the value for `BookedFirstClassSeats`.
-- If `forFirstClass` is `false`, add `totalNumberOfSeats` to the value for `BookedCoachSeats`.
-- It returns `true` if there were enough seats to make the reservation, otherwise it returns `false`.
-
-
-### Step Five: Implement the `Television` class
-
-#### Instance variables
-
-| Attribute      | Data Type | Get      | Set  | Description                                                  |
-| -------------- | --------- | -------- | ---- | ------------------------------------------------------------ |
-| on             | boolean   | X (isOn) |      | Whether or not the TV is turned on.                          |
-| currentChannel | int       | X        |      | The value for the current channel. Channel levels go between 3 and 18. |
-| currentVolume  | int       | X        |      | The current volume level.                                    |
-
-#### Constructors
-
-The `Television` class doesn't need a constructor. However, the instance variables need default values: a new TV is off by default. The channel is set to three and the volume level to two.
-
-#### Methods
-
-Create methods based on the following signatures:
-
-```
-    void turnOff()
-    void turnOn()
-    void changeChannel(int newChannel)
-    void channelUp()
-    void channelDown()
-    void raiseVolume()
-    void lowerVolume()
-```
-
-**Notes**
-
-- `turnOff()` turns off the TV.
-- `turnOn()` turns the TV on and also resets the channel to three and the volume level to two.
-- `changeChannel(int newChannel)` changes the current channel—only if it's on—to the value of `newChannel` as long as it's between 3 and 18.
-- `channelUp()` increases the current channel by one, only if it's on. If the value goes past 18, then the current channel should be set to three.
-- `channelDown()` decreases the current channel by one, only if it's on. If the value goes below three, then the current channel should be set to 18.
-- `raiseVolume()` increases the volume by one, only if it's on. The limit is 10.
-- `lowerVolume()` decreases the volume by one, only if it's on. The limit is zero.
-
-### Step Six: Implement the `Elevator` class
-
-#### Instance variables
-
-| Attribute      | Data Type | Get            | Set  | Description                                     |
-| -------------- | --------- | -------------- | ---- | ----------------------------------------------- |
-| currentFloor   | int       | X              |      | The current floor that the elevator is on.      |
-| numberOfFloors | int       | X              |      | The number of floors available to the elevator. |
-| doorOpen       | boolean   | X (isDoorOpen) |      | Whether the elevator door is open or not.       |
-
-#### Constructor
-
-The `Elevator` class has a single constructor that accepts one parameter, `int numberOfLevels`, which indicates how many floors are available to the elevator.
-
-Either provide a default value or set it in the constructor so new elevators start on floor one.
-
-#### Methods
-
-Create methods based on the following signatures:
-
-```
-    void openDoor()
-    void closeDoor()
-    void goUp(int desiredFloor)
-    void goDown(int desiredFloor)
-```
-
-**Notes**
-
-- `openDoor()` opens the elevator door.
-- `closeDoor()` closes the elevator door.
-- `goUp(int desiredFloor)` sends the elevator upward to the desired floor as long as the door isn't open. The elevator can't go past last floor.
-- `goDown(int desiredFloor)` sends the elevator downward to the desired floor as long as the door isn't open. It can't go past floor one.
-
----
-
-[derived-properties]: https://www.uml-diagrams.org/derived-property.html
-[introduction-to-test-driven-development]: http://agiledata.org/essays/tdd.html
-[java-access-modifiers]: https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html
-[loose-coupling]: http://wiki.c2.com/?CouplingAndCohesion
+Once the `BankCustomerTests` unit test passes, this section is complete.
