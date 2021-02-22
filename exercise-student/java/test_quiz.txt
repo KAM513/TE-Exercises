@@ -1,0 +1,3 @@
+What is the current year?|2019|2021*|2020|Who Knows?
+What is the current season?|Winter*|Spring|Summer|Fall
+Who is the fastest ever human over 100m?|TheFlash|FloJo|Tyreke Hill|Usain Bolt*|
