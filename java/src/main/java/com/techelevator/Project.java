@@ -1,0 +1,62 @@
+package com.techelevator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Project {
+
+//    attributes
+    private String name;
+    private String description;
+    private String startDate;
+    private String dueDate;
+    private List<Employee> teamMembers = new ArrayList<>();
+
+//    getters
+    public String getName() {
+        return name;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public String getStartDate() {
+        return startDate;
+    }
+    public String getDueDate() {
+        return dueDate;
+    }
+    public List<Employee> getTeamMembers () {
+        return teamMembers;
+    }
+//    setters
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+    public void setTeamMembers(Employee teamMember) {
+        this.teamMembers.add(teamMember);
+    }
+    public void setTeamMembers(List<Employee>teamMembers) {
+        this.teamMembers = teamMembers;
+    }
+//    constructors
+    public Project(String name, String description, String startDate, String dueDate) {
+        setName(name);
+        setDescription(description);
+        setStartDate(startDate);
+        setDueDate(dueDate);
+    }
+
+
+
+
+
+}
